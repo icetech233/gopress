@@ -1,0 +1,111 @@
+:root {
+	--vp-c-brand: #3eaf7c;
+	--vp-c-brand-light: #4abf8a;
+	--vp-c-brand-dark: #3aa675;
+	--vp-c-bg: #ffffff;
+	--vp-c-bg-alt: #f6f6f7;
+	--vp-c-text: #3c3c43;
+	--vp-c-text-2: #3c3c43c4;
+	--vp-c-border: #e2e2e3;
+	--vp-c-divider: #e2e2e3;
+	--vp-nav-bg-color: #ffffff;
+	--vp-sidebar-bg-color: #f6f6f7;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+html.dark {
+	--vp-c-bg: #1e1e20;
+	--vp-c-bg-alt: #161618;
+	--vp-c-text: #fffff5db;
+	--vp-c-text-2: #ebebf599;
+	--vp-c-border: #32363f;
+	--vp-c-divider: #2e2e32;
+	--vp-nav-bg-color: #1e1e20;
+	--vp-sidebar-bg-color: #1e1e20;
+}
+body {
+	margin: 0;
+	padding: 0;
+	color: var(--vp-c-text);
+	background-color: var(--vp-c-bg);
+	line-height: 1.6;
+	transition: background-color 0.2s;
+}
+a { text-decoration: none; color: var(--vp-c-brand); }
+
+/* Layout */
+.Layout { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* Nav */
+.VPNav { position: sticky; top: 0; z-index: 10; background-color: var(--vp-nav-bg-color); border-bottom: 1px solid var(--vp-c-border); }
+.VPNavBar { display: flex; justify-content: space-between; align-items: center; padding: 0 32px; height: 64px; }
+.VPNavBar .title a { font-weight: 600; font-size: 1.3rem; color: var(--vp-c-text); display: flex; align-items: center; }
+.VPNavBar .logo { height: 24px; margin-right: 8px; }
+.VPNavBar .content { display: flex; align-items: center; gap: 1rem; }
+.VPNavBarMenu { display: none; }
+@media (min-width: 768px) { .VPNavBarMenu { display: flex; gap: 1rem; } }
+.VPNavBarMenu a { color: var(--vp-c-text); font-size: 0.9rem; font-weight: 500; }
+.VPNavBarMenu a:hover { color: var(--vp-c-brand); }
+
+.VPNavBarAppearance, .VPNavBarSocialLinks { display: flex; align-items: center; gap: 0.5rem; }
+.VPSwitchAppearance { background: none; border: none; cursor: pointer; font-size: 1.2rem; }
+html.dark .vpi-sun { display: none; }
+html:not(.dark) .vpi-moon { display: none; }
+
+/* Social Icons */
+.VPSocialLink { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; color: var(--vp-c-text-2); transition: color 0.25s; }
+.VPSocialLink:hover { color: var(--vp-c-text); }
+.vpi-social { display: inline-block; width: 20px; height: 20px; background-color: currentColor; mask-size: cover; -webkit-mask-size: cover; mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat; mask-position: center; -webkit-mask-position: center; }
+.vpi-social-github { --icon: url('https://api.iconify.design/simple-icons/github.svg'); -webkit-mask-image: var(--icon); mask-image: var(--icon); }
+/* Fallback text hiding */
+.VPSocialLink span { font-size: 0; }
+
+.VPNavBarHamburger { display: block; background: none; border: none; cursor: pointer; font-size: 1.5rem; padding: 0.5rem;}
+@media (min-width: 768px) { .VPNavBarHamburger { display: none; } }
+
+.VPLocalNav { display: block; padding: 12px 24px; border-bottom: 1px solid var(--vp-c-border); }
+.VPLocalNav .menu { background: none; border: 1px solid var(--vp-c-border); padding: 4px 8px; border-radius: 4px; cursor: pointer; color: var(--vp-c-text); }
+@media (min-width: 768px) { .VPLocalNav { display: none; } }
+
+/* Sidebar */
+.VPSidebar { position: fixed; top: 64px; bottom: 0; left: 0; z-index: 20; width: 272px; background-color: var(--vp-sidebar-bg-color); padding: 32px; overflow-y: auto; transform: translateX(-100%); transition: transform 0.25s ease; box-sizing: border-box; }
+.VPSidebar.open { transform: translateX(0); }
+@media (min-width: 768px) { .VPSidebar { transform: translateX(0); border-right: 1px solid var(--vp-c-border); } }
+.VPSidebarGroup { margin-bottom: 24px; }
+.VPSidebarGroup .title-text { font-size: 1rem; font-weight: 700; margin: 0 0 8px 0; color: var(--vp-c-text); }
+.VPSidebarItem a { display: block; color: var(--vp-c-text-2); padding: 4px 0; font-size: 0.95rem; }
+.VPSidebarItem a:hover { color: var(--vp-c-brand); }
+
+/* Content */
+.VPContent { padding-top: 24px; flex-grow: 1; }
+@media (min-width: 768px) { .VPContent:not(.is-home) { padding-left: 272px; } }
+.VPDoc { padding: 32px 24px; max-width: 768px; margin: 0 auto; }
+
+/* Home */
+.VPHome { padding-bottom: 96px; }
+.VPHero { padding: 48px 24px; text-align: center; }
+.VPHero .name { font-size: 3rem; font-weight: 700; margin: 0; color: var(--vp-c-text); letter-spacing: -0.4px; }
+.VPHero .text { font-size: 3rem; font-weight: 700; margin: 0; color: var(--vp-c-text-2); letter-spacing: -0.4px; }
+.VPHero .tagline { font-size: 1.5rem; color: var(--vp-c-text-2); margin: 24px 0 48px; }
+.VPHero .actions { display: flex; gap: 16px; justify-content: center; }
+.VPButton { display: inline-block; border-radius: 20px; padding: 8px 16px; font-weight: 600; transition: color 0.25s, background-color 0.25s; }
+.VPButton.brand { background-color: var(--vp-c-brand); color: #fff; }
+.VPButton.brand:hover { background-color: var(--vp-c-brand-light); }
+.VPButton.alt { background-color: var(--vp-c-bg-alt); color: var(--vp-c-text); }
+.VPButton.alt:hover { background-color: var(--vp-c-border); }
+
+.VPFeatures { padding: 0 24px; max-width: 1152px; margin: 0 auto; }
+.VPFeatures .items { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.VPFeature { background-color: var(--vp-c-bg-alt); padding: 24px; border-radius: 12px; height: 100%; box-sizing: border-box; }
+.VPFeature .title { font-size: 1.2rem; font-weight: 600; margin: 0 0 8px; }
+.VPFeature .details { color: var(--vp-c-text-2); margin: 0; line-height: 1.5; }
+
+/* Markdown Content Styles */
+.main h1, .main h2, .main h3, .main h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.main code { background: var(--vp-c-bg-alt); padding: 0.2em 0.4em; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+.main pre { background: #1e1e20; color: #fff; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+.main pre code { background: transparent; color: inherit; padding: 0; }
+
+/* Footer */
+.VPFooter { padding: 32px 24px; border-top: 1px solid var(--vp-c-border); text-align: center; color: var(--vp-c-text-2); background-color: var(--vp-c-bg); }
+@media (min-width: 768px) { .VPFooter:not(.is-home) { padding-left: 272px; } }
+.VPFooter .message, .VPFooter .copyright { margin: 0; line-height: 24px; font-size: 0.9rem; }

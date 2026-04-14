@@ -1,0 +1,172 @@
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>测试修改 | My GoPress WebSite</title>
+	<meta name="description" content="A gopress website">
+	<link rel="stylesheet" href="/assets/theme.css">
+	<script>
+		const savedTheme = localStorage.getItem('gopress-theme-appearance');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+			document.documentElement.classList.add('dark');
+		}
+	</script>
+</head>
+<body>
+	<div class="Layout" id="Layout">
+		
+<header class="VPNav">
+	<div class="VPNavBar">
+		<div class="title">
+			<a href="/">
+				
+				My GoPress WebSite
+			</a>
+		</div>
+		<div class="content">
+			<nav class="VPNavBarMenu">
+				
+				<a class="VPLink" href="/index.html">Home</a>
+				
+				<a class="VPLink" href="/guide/index.html">Guide</a>
+				
+				<a class="VPLink" href="/icetest/index.html">IceTest</a>
+				
+			</nav>
+			<div class="VPNavBarAppearance">
+				<button class="VPSwitchAppearance" type="button" aria-label="Toggle dark mode" onclick="toggleDarkMode()">
+					<span class="vpi-sun sun">☀️</span>
+					<span class="vpi-moon moon">🌙</span>
+				</button>
+			</div>
+			<div class="VPNavBarSocialLinks">
+				
+				<a class="VPSocialLink" href="https://github.com/icetech233/gopress" target="_blank" rel="noopener" aria-label="github">
+					<span class="vpi-social vpi-social-github">github</span>
+				</a>
+				
+			</div>
+			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">
+				☰
+			</button>
+		</div>
+	</div>
+</header>
+
+		
+		<div class="VPLocalNav">
+			<button class="menu" aria-expanded="false" onclick="toggleSidebar()">Menu</button>
+		</div>
+		
+		
+
+<aside class="VPSidebar" id="VPSidebar">
+	<nav class="nav" id="VPSidebarNav">
+		
+		<div class="VPSidebarGroup">
+			<div class="title">
+				<h2 class="title-text">Introduction</h2>
+			</div>
+			
+			<div class="VPSidebarItem">
+				<a class="VPLink link" href="/guide/index.html"><span class="text">Introduction</span></a>
+			</div>
+			
+		</div>
+		
+		<div class="VPSidebarGroup">
+			<div class="title">
+				<h2 class="title-text">IceTest</h2>
+			</div>
+			
+			<div class="VPSidebarItem">
+				<a class="VPLink link" href="/icetest/index.html"><span class="text">IceTest</span></a>
+			</div>
+			
+		</div>
+		
+	</nav>
+</aside>
+
+
+		
+<div class="VPContent " id="VPContent">
+	
+		
+<div class="VPDoc">
+	<div class="container">
+		<div class="content">
+			<main class="main" id="main-content">
+				<h1 id="heading">测试修改页面</h1>
+<p>本页面用于演示和验证对 GoPress 网站内容的编辑与更新流程。您可在此测试 Markdown 格式、代码块展示及链接功能。</p>
+<h2 id="go-">示例：Go 语言基础代码</h2>
+<p>以下是一个标准的 Go “Hello, World!” 程序，展示了基本语法结构：</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+func main() {
+    fmt.Println(&quot;Hello Go&quot;)
+}
+</code></pre>
+<h3 id="heading-1">代码说明：</h3>
+<ul>
+<li><code>package main</code>：定义主程序包，是可执行程序的入口。</li>
+<li><code>import &quot;fmt&quot;</code>：导入标准库中的格式化 I/O 包。</li>
+<li><code>func main()</code>：程序的主函数，执行从这里开始。</li>
+<li><code>fmt.Println(...)</code>：向标准输出打印一行文本。</li>
+</ul>
+<h2 id="heading-2">常见测试场景</h2>
+<p>在 GoPress 开发或内容维护中，此页面可用于以下测试目的：</p>
+<ul>
+<li>✅ <strong>Markdown 渲染验证</strong>（标题、列表、代码块等）</li>
+<li>✅ <strong>Go 代码高亮显示</strong></li>
+<li>✅ <strong>页面保存与部署流程</strong></li>
+<li>✅ <strong>跨页面链接跳转测试</strong></li>
+</ul>
+<h2 id="heading-3">相关链接</h2>
+<ul>
+<li><a href="/index.html">返回首页</a></li>
+<li><a href="/guide/index.html">查看完整指南</a></li>
+<li><a href="/icetest/index.html">运行自动化测试（IceTest）</a></li>
+</ul>
+<blockquote>
+<p>🛠️ 提示：每次修改后，请确认页面在预览和生产环境中均正确渲染。</p>
+</blockquote>
+
+			</main>
+		</div>
+	</div>
+</div>
+
+	
+</div>
+
+		
+
+<footer class="VPFooter ">
+	<div class="container">
+		<p class="message">Released under the MIT License.</p>
+		<p class="copyright">Copyright © 2026 GoPress Contributors</p>
+	</div>
+</footer>
+
+
+	</div>
+	<script type="module" src="/assets/app.js"></script>
+</body>
+</html>

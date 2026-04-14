@@ -1,0 +1,165 @@
+{{ define "VPNav" }}
+<header class="VPNav">
+	<div class="VPNavBar">
+		<div class="title">
+			<a href="{{ .SiteConfig.Base }}">
+				{{ if .SiteConfig.ThemeConfig.Logo }}<img src="{{ .SiteConfig.Base }}{{ .SiteConfig.ThemeConfig.Logo }}" alt="Logo" class="logo">{{ end }}
+				{{ .SiteConfig.Title }}
+			</a>
+		</div>
+		<div class="content">
+			<nav class="VPNavBarMenu">
+				{{ range .SiteConfig.ThemeConfig.Nav }}
+				<a class="VPLink" href="{{ .Link }}">{{ .Text }}</a>
+				{{ end }}
+			</nav>
+			<div class="VPNavBarAppearance">
+				<button class="VPSwitchAppearance" type="button" aria-label="Toggle dark mode" onclick="toggleDarkMode()">
+					<span class="vpi-sun sun">☀️</span>
+					<span class="vpi-moon moon">🌙</span>
+				</button>
+			</div>
+			<div class="VPNavBarSocialLinks">
+				{{ range .SiteConfig.ThemeConfig.SocialLinks }}
+				<a class="VPSocialLink" href="{{ .Link }}" target="_blank" rel="noopener" aria-label="{{ .Icon }}">
+					<span class="vpi-social vpi-social-{{ .Icon }}">{{ .Icon }}</span>
+				</a>
+				{{ end }}
+			</div>
+			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">
+				☰
+			</button>
+		</div>
+	</div>
+</header>
+{{ end }}
+
+{{ define "VPSidebar" }}
+{{ if .HasSidebar }}
+<aside class="VPSidebar" id="VPSidebar">
+	<nav class="nav" id="VPSidebarNav">
+		{{ range .SidebarData }}
+		<div class="VPSidebarGroup">
+			<div class="title">
+				<h2 class="title-text">{{ .Text }}</h2>
+			</div>
+			{{ if .Link }}
+			<div class="VPSidebarItem">
+				<a class="VPLink link" href="{{ .Link }}"><span class="text">{{ .Text }}</span></a>
+			</div>
+			{{ end }}
+		</div>
+		{{ end }}
+	</nav>
+</aside>
+{{ end }}
+{{ end }}
+
+{{ define "VPContent" }}
+<div class="VPContent {{ if .IsHome }}is-home{{ end }}" id="VPContent">
+	{{ if .IsHome }}
+		{{ template "VPHome" . }}
+	{{ else }}
+		{{ template "VPDoc" . }}
+	{{ end }}
+</div>
+{{ end }}
+
+{{ define "VPHome" }}
+<div class="VPHome">
+	{{ if .Hero.Name }}
+	<div class="VPHero">
+		<div class="container">
+			<div class="main">
+				<h1 class="name">{{ .Hero.Name }}</h1>
+				{{ if .Hero.Text }}<p class="text">{{ .Hero.Text }}</p>{{ end }}
+				{{ if .Hero.Tagline }}<p class="tagline">{{ .Hero.Tagline }}</p>{{ end }}
+				{{ if .Hero.Actions }}
+				<div class="actions">
+					{{ range .Hero.Actions }}
+					<div class="action">
+						<a class="VPButton {{ .Theme }}" href="{{ .Link }}">{{ .Text }}</a>
+					</div>
+					{{ end }}
+				</div>
+				{{ end }}
+			</div>
+		</div>
+	</div>
+	{{ end }}
+	{{ if .Features }}
+	<div class="VPFeatures">
+		<div class="container">
+			<div class="items">
+				{{ range .Features }}
+				<div class="item">
+					<div class="VPFeature">
+						<h2 class="title">{{ .Title }}</h2>
+						{{ if .Details }}<p class="details">{{ .Details }}</p>{{ end }}
+					</div>
+				</div>
+				{{ end }}
+			</div>
+		</div>
+	</div>
+	{{ end }}
+	<div class="main">
+		{{ .Content }}
+	</div>
+</div>
+{{ end }}
+
+{{ define "VPDoc" }}
+<div class="VPDoc">
+	<div class="container">
+		<div class="content">
+			<main class="main" id="main-content">
+				{{ .Content }}
+			</main>
+		</div>
+	</div>
+</div>
+{{ end }}
+
+{{ define "VPFooter" }}
+{{ if .SiteConfig.ThemeConfig.Footer }}
+<footer class="VPFooter {{ if .IsHome }}is-home{{ end }}">
+	<div class="container">
+		{{ if .SiteConfig.ThemeConfig.Footer.message }}<p class="message">{{ .SiteConfig.ThemeConfig.Footer.message }}</p>{{ end }}
+		{{ if .SiteConfig.ThemeConfig.Footer.copyright }}<p class="copyright">{{ .SiteConfig.ThemeConfig.Footer.copyright }}</p>{{ end }}
+	</div>
+</footer>
+{{ end }}
+{{ end }}
+
+<!DOCTYPE html>
+<html lang="{{ .SiteConfig.Lang }}">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ if .PageTitle }}{{ .PageTitle }} | {{ end }}{{ .SiteConfig.Title }}</title>
+	<meta name="description" content="{{ .SiteConfig.Description }}">
+	<link rel="stylesheet" href="{{ .SiteConfig.Base }}assets/theme.css">
+	<script>
+		const savedTheme = localStorage.getItem('gopress-theme-appearance');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+			document.documentElement.classList.add('dark');
+		}
+	</script>
+</head>
+<body>
+	<div class="Layout" id="Layout">
+		{{ template "VPNav" . }}
+		{{ if .HasSidebar }}
+		<div class="VPLocalNav">
+			<button class="menu" aria-expanded="false" onclick="toggleSidebar()">Menu</button>
+		</div>
+		{{ end }}
+		{{ template "VPSidebar" . }}
+		{{ template "VPContent" . }}
+		{{ template "VPFooter" . }}
+	</div>
+	<script type="module" src="{{ .SiteConfig.Base }}assets/app.js"></script>
+</body>
+</html>

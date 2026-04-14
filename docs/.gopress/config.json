@@ -1,0 +1,41 @@
+{
+  "title": "My GoPress WebSite",
+  "themeConfig": {
+    "nav": [
+      {
+        "text": "Home",
+        "link": "/index.html"
+      },
+      {
+        "text": "Guide",
+        "link": "/guide/index.html"
+      },
+      {
+        "text": "IceTest",
+        "link": "/icetest/index.html"
+      }
+    ],
+    "sidebar": {
+      "/": [
+        {
+          "text": "Introduction",
+          "link": "/guide/index.html"
+        },
+        {
+          "text": "IceTest",
+          "link": "/icetest/index.html"
+        }
+      ]
+    },
+    "footer": {
+      "message": "Released under the MIT License.",
+      "copyright": "Copyright © 2026 GoPress Contributors"
+    },
+    "socialLinks": [
+      {
+        "icon": "github",
+        "link": "https://github.com/icetech233/gopress"
+      }
+    ]
+  }
+}

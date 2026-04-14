@@ -1,0 +1,3 @@
+go build .\cmd\gopress
+
+gopress.exe build docs

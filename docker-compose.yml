@@ -1,0 +1,22 @@
+# docker-compose.yml
+services:
+  gopress:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gopress-dev
+    # 重启策略：除非手动停止，否则总是尝试重启容器
+    restart: unless-stopped
+    ports:
+      # 将主机的 5173 端口映射到容器的 5173 端口
+      - "5173:5173"
+    volumes:
+      # 将本地的 docs 目录映射到容器的 /app/docs，实现实时预览
+      # 这里的 ./docs 是你在本地存放 Markdown 文件的目录
+      - ./docs:/app/docs
+    
+    # 覆盖默认命令的示例（如果需要修改端口或添加其他参数，可以取消注释并修改下面这行）
+    # command: ["dev", "--port", "5173", "/app/docs"]
+
+    # 针对开发环境的配置：启用 init 进程防止僵尸进程问题
+    init: true

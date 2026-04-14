@@ -1,0 +1,148 @@
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>My GoPress WebSite</title>
+	<meta name="description" content="A gopress website">
+	<link rel="stylesheet" href="/assets/theme.css">
+	<script>
+		const savedTheme = localStorage.getItem('gopress-theme-appearance');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+			document.documentElement.classList.add('dark');
+		}
+	</script>
+</head>
+<body>
+	<div class="Layout" id="Layout">
+		
+<header class="VPNav">
+	<div class="VPNavBar">
+		<div class="title">
+			<a href="/">
+				
+				My GoPress WebSite
+			</a>
+		</div>
+		<div class="content">
+			<nav class="VPNavBarMenu">
+				
+				<a class="VPLink" href="/index.html">Home</a>
+				
+				<a class="VPLink" href="/guide/index.html">Guide</a>
+				
+				<a class="VPLink" href="/icetest/index.html">IceTest</a>
+				
+			</nav>
+			<div class="VPNavBarAppearance">
+				<button class="VPSwitchAppearance" type="button" aria-label="Toggle dark mode" onclick="toggleDarkMode()">
+					<span class="vpi-sun sun">☀️</span>
+					<span class="vpi-moon moon">🌙</span>
+				</button>
+			</div>
+			<div class="VPNavBarSocialLinks">
+				
+				<a class="VPSocialLink" href="https://github.com/icetech233/gopress" target="_blank" rel="noopener" aria-label="github">
+					<span class="vpi-social vpi-social-github">github</span>
+				</a>
+				
+			</div>
+			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">
+				☰
+			</button>
+		</div>
+	</div>
+</header>
+
+		
+		
+
+
+		
+<div class="VPContent is-home" id="VPContent">
+	
+		
+<div class="VPHome">
+	
+	<div class="VPHero">
+		<div class="container">
+			<div class="main">
+				<h1 class="name">我的Press Go</h1>
+				<p class="text">Go语言强力驱动</p>
+				<p class="tagline">极简、极速的静态站点生成器</p>
+				
+				<div class="actions">
+					
+					<div class="action">
+						<a class="VPButton brand" href="/guide/index.html">快速开始</a>
+					</div>
+					
+					<div class="action">
+						<a class="VPButton alt" href="/icetest/index.html">查看源码</a>
+					</div>
+					
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="VPFeatures">
+		<div class="container">
+			<div class="items">
+				
+				<div class="item">
+					<div class="VPFeature">
+						<h2 class="title">极致轻量</h2>
+						<p class="details">无需Node.js环境，单文件即可运行</p>
+					</div>
+				</div>
+				
+				<div class="item">
+					<div class="VPFeature">
+						<h2 class="title">Markdown驱动</h2>
+						<p class="details">原汁原味的Markdown写作体验</p>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	<div class="main">
+		<h3 id="heading">不应该有多余内容</h3>
+
+	</div>
+</div>
+
+	
+</div>
+
+		
+
+<footer class="VPFooter is-home">
+	<div class="container">
+		<p class="message">Released under the MIT License.</p>
+		<p class="copyright">Copyright © 2026 GoPress Contributors</p>
+	</div>
+</footer>
+
+
+	</div>
+	<script type="module" src="/assets/app.js"></script>
+</body>
+</html>
