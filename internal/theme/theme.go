@@ -4,7 +4,9 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
-	"html/template"
+	"log/slog"
+	"strings"
+	"text/template"
 
 	"github.com/icetech233/gopress/internal/config"
 	"github.com/icetech233/gopress/internal/markdown"
@@ -16,7 +18,7 @@ var themeCSS string
 //go:embed theme.js
 var themeJS string
 
-//go:embed layout.html
+//go:embed layout.tmpl
 var layoutHTML string
 
 // HeroAction represents a call-to-action button in the hero section.
@@ -44,7 +46,7 @@ type Feature struct {
 type PageData struct {
 	SiteConfig  *config.SiteConfig
 	PageTitle   string
-	Content     template.HTML
+	Content     string
 	Meta        map[string]interface{}
 	IsHome      bool
 	Hero        Hero
@@ -140,15 +142,18 @@ func GenerateHTML(siteConfig *config.SiteConfig, result *markdown.RenderResult, 
 	if err != nil {
 		return "", err
 	}
+	// TODO 调试meta的数据
+	slog.Info("Meta", "meta", result.Meta)
 
 	isHome := str(result.Meta["layout"]) == "home"
 	hero := parseHero(result.Meta)
 	features := parseFeatures(result.Meta)
 
-	// Determine matching sidebar based on currentPath
+	sidebarKey := GetSidebarKey(currentPath)
+	// Determine matching sidebar based on sidebarKey
 	var matchedSidebar []config.SidebarItem
 	// Try to match specific path prefix first, fall back to "/"
-	if sidebar, ok := siteConfig.ThemeConfig.Sidebar[currentPath]; ok {
+	if sidebar, ok := siteConfig.ThemeConfig.Sidebar[sidebarKey]; ok {
 		matchedSidebar = sidebar
 	} else if sidebar, ok := siteConfig.ThemeConfig.Sidebar["/"]; ok {
 		matchedSidebar = sidebar
@@ -157,7 +162,7 @@ func GenerateHTML(siteConfig *config.SiteConfig, result *markdown.RenderResult, 
 	data := PageData{
 		SiteConfig:  siteConfig,
 		PageTitle:   result.Title,
-		Content:     template.HTML(result.HTML),
+		Content:     result.HTML,
 		Meta:        result.Meta,
 		IsHome:      isHome,
 		Hero:        hero,
@@ -174,7 +179,11 @@ func GenerateHTML(siteConfig *config.SiteConfig, result *markdown.RenderResult, 
 	return buf.String(), nil
 }
 
-// GenerateIndexPage creates an index.html if index.md is missing.
-func GenerateIndexPage(siteConfig *config.SiteConfig) string {
-	return ""
+// GetSidebarKey 严谨修改这个函数
+func GetSidebarKey(s string) string {
+	lastIdx := strings.LastIndex(s, "/")
+	if lastIdx == -1 {
+		return "/"
+	}
+	return s[:lastIdx+1]
 }

@@ -1,6 +1,11 @@
 {
   "title": "My GoPress WebSite",
   "themeConfig": {
+    "logo": {
+      "light": "https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png",
+      "dark": "https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png",
+      "alt": "测试Logo"
+    },
     "nav": [
       {
         "text": "Home",
@@ -18,8 +23,58 @@
     "sidebar": {
       "/": [
         {
-          "text": "Introduction",
-          "link": "/guide/index.html"
+          "text": "导航",
+          "items": [
+            {
+              "text": "导航介绍",
+              "link": "/guide/index.html"
+            }
+          ]
+        },
+        {
+          "text": "一级菜单",
+          "collapsed": false,
+          "items": [
+            {
+              "text": "二级菜单首页",
+              "link": "/icetest/index.html"
+            },
+            {
+              "text": "二级次页面",
+              "link": "/icetest/index.html"
+            },
+            {
+              "text": "二级菜单",
+              "collapsed": true,
+              "items": [
+                {
+                  "text": "三级",
+                  "link": "/icetest/index.html"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "历史记录",
+          "items": [
+            {
+              "text": "折叠状态持久化",
+              "link": "/history/sidebar-localstorage-persistence.html"
+            },
+            {
+              "text": "侧边栏状态重构",
+              "link": "/history/sidebar-state-refactor.html"
+            },
+            {
+              "text": "侧边栏防闪烁",
+              "link": "/history/sidebar-fouc-optimization.html"
+            },
+            {
+              "text": "站点logo功能",
+              "link": "/history/themeable-logo.html"
+            }
+          ]
         },
         {
           "text": "IceTest",
@@ -28,7 +83,7 @@
       ]
     },
     "footer": {
-      "message": "Released under the MIT License.",
+      "message": "Released under the <a href=\"https://github.com/vuejs/vitepress/blob/main/LICENSE\">MIT License</a>.",
       "copyright": "Copyright © 2026 GoPress Contributors"
     },
     "socialLinks": [

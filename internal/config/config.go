@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 
@@ -11,17 +12,31 @@ import (
 
 // NavItem represents a navigation link.
 type NavItem struct {
-	Text   string `json:"text" yaml:"text"`
-	Link   string `json:"link" yaml:"link"`
-	Active string `json:"activeMatch,omitempty" yaml:"activeMatch,omitempty"`
+	Text        string `json:"text" yaml:"text"`
+	Link        string `json:"link" yaml:"link"`
+	ActiveMatch string `json:"activeMatch,omitempty" yaml:"activeMatch,omitempty"`
 }
 
 // SidebarItem represents a sidebar group or link.
 type SidebarItem struct {
-	Text      string        `json:"text" yaml:"text"`
-	Link      string        `json:"link,omitempty" yaml:"link,omitempty"`
+	Text string `json:"text" yaml:"text"`
+	Link string `json:"link,omitempty" yaml:"link,omitempty"`
+	// 规则：
+	//   1. 不指定该字段 或者 子项Items为空 → 分组**不可折叠**
+	//   2. 设置为 true  → 分组**可折叠**，且**默认折叠**
+	//   3. 设置为 false → 分组**可折叠**，且**默认展开**
 	Collapsed *bool         `json:"collapsed,omitempty" yaml:"collapsed,omitempty"`
 	Items     []SidebarItem `json:"items,omitempty" yaml:"items,omitempty"`
+}
+
+// IsCollapsible returns true if the sidebar item is collapsible.
+func (s SidebarItem) IsCollapsible() bool {
+	return s.Collapsed != nil && len(s.Items) > 0
+}
+
+// IsCollapsed returns true if the sidebar item should be collapsed by default.
+func (s SidebarItem) IsCollapsed() bool {
+	return s.IsCollapsible() && *s.Collapsed
 }
 
 // SocialLink represents a social icon link (e.g. GitHub).
@@ -30,9 +45,15 @@ type SocialLink struct {
 	Link string `json:"link" yaml:"link"`
 }
 
+type ThemeableImage struct {
+	Light string `json:"light,omitempty" yaml:"light,omitempty"`
+	Dark  string `json:"dark,omitempty" yaml:"dark,omitempty"`
+	Alt   string `json:"alt,omitempty" yaml:"alt,omitempty"`
+}
+
 // ThemeConfig represents the theme configuration options.
 type ThemeConfig struct {
-	Logo        string                   `json:"logo,omitempty" yaml:"logo,omitempty"`
+	Logo        ThemeableImage           `json:"logo,omitempty" yaml:"logo,omitempty"`
 	Nav         []NavItem                `json:"nav,omitempty" yaml:"nav,omitempty"`
 	Sidebar     map[string][]SidebarItem `json:"sidebar,omitempty" yaml:"sidebar,omitempty"`
 	SocialLinks []SocialLink             `json:"socialLinks,omitempty" yaml:"socialLinks,omitempty"`
@@ -56,6 +77,11 @@ func DefaultSiteConfig() *SiteConfig {
 		Base:        "/",
 		Lang:        "en-US",
 		ThemeConfig: ThemeConfig{
+			Logo: ThemeableImage{
+				Light: "https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png",
+				Dark:  "https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png",
+				Alt:   "Logo",
+			},
 			Nav:         []NavItem{},
 			Sidebar:     make(map[string][]SidebarItem),
 			SocialLinks: []SocialLink{},
@@ -75,6 +101,10 @@ func LoadConfig(root string) (*SiteConfig, error) {
 		if err := json.Unmarshal(data, config); err != nil {
 			return nil, fmt.Errorf("error parsing config.json: %w", err)
 		}
+
+		jsonData, _ := json.Marshal(config)
+		slog.Warn("Loaded config.json", "path", jsonPath, "data", string(jsonData))
+
 		return config, nil
 	}
 

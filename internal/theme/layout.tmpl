@@ -3,7 +3,8 @@
 	<div class="VPNavBar">
 		<div class="title">
 			<a href="{{ .SiteConfig.Base }}">
-				{{ if .SiteConfig.ThemeConfig.Logo }}<img src="{{ .SiteConfig.Base }}{{ .SiteConfig.ThemeConfig.Logo }}" alt="Logo" class="logo">{{ end }}
+				{{ if .SiteConfig.ThemeConfig.Logo.Light }}<img src="{{ .SiteConfig.ThemeConfig.Logo.Light }}" alt="{{ .SiteConfig.ThemeConfig.Logo.Alt }}" class="logo light-only">{{ end }}
+				{{ if .SiteConfig.ThemeConfig.Logo.Dark }}<img src="{{ .SiteConfig.ThemeConfig.Logo.Dark }}" alt="{{ .SiteConfig.ThemeConfig.Logo.Alt }}" class="logo dark-only">{{ end }}
 				{{ .SiteConfig.Title }}
 			</a>
 		</div>
@@ -26,12 +27,36 @@
 				</a>
 				{{ end }}
 			</div>
-			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">
-				☰
-			</button>
+			{{ if not .IsHome }}
+			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">☰</button>
+			{{ end }}
 		</div>
 	</div>
 </header>
+{{ end }}
+
+{{ define "VPSidebarItemNode" }}
+<div class="VPSidebarItem {{ if .IsCollapsible }}is-collapsible{{ end }} {{ if .IsCollapsed }}collapsed{{ end }}">
+	<div class="item-row">
+		{{ if .Link }}
+		<a class="VPLink link" href="{{ .Link }}"><span class="text">{{ .Text }}</span></a>
+		{{ else }}
+		<span class="text">{{ .Text }}</span>
+		{{ end }}
+		{{ if .IsCollapsible }}
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		{{ end }}
+	</div>
+	{{ if .Items }}
+	<div class="VPSidebarGroup" {{ if .IsCollapsed }}style="display: none;"{{ end }}>
+		{{ range .Items }}
+		{{ template "VPSidebarItemNode" . }}
+		{{ end }}
+	</div>
+	{{ end }}
+</div>
 {{ end }}
 
 {{ define "VPSidebar" }}
@@ -40,14 +65,7 @@
 	<nav class="nav" id="VPSidebarNav">
 		{{ range .SidebarData }}
 		<div class="VPSidebarGroup">
-			<div class="title">
-				<h2 class="title-text">{{ .Text }}</h2>
-			</div>
-			{{ if .Link }}
-			<div class="VPSidebarItem">
-				<a class="VPLink link" href="{{ .Link }}"><span class="text">{{ .Text }}</span></a>
-			</div>
-			{{ end }}
+			{{ template "VPSidebarItemNode" . }}
 		</div>
 		{{ end }}
 	</nav>
@@ -146,16 +164,57 @@
 		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
 			document.documentElement.classList.add('dark');
 		}
+
+		// 提前恢复侧边栏折叠状态，在DOM解析期间立即应用，彻底避免页面渲染闪烁
+		(function() {
+			try {
+				const saved = localStorage.getItem('gopress-sidebar-states');
+				if (!saved) return;
+				const states = JSON.parse(saved);
+				
+				const observer = new MutationObserver((mutations) => {
+					for (const mutation of mutations) {
+						for (const node of mutation.addedNodes) {
+							if (node.nodeType !== 1) continue;
+							
+							const items = node.classList && node.classList.contains('VPSidebarItem') 
+								? [node] 
+								: node.querySelectorAll ? Array.from(node.querySelectorAll('.VPSidebarItem.is-collapsible')) : [];
+							
+							for (const item of items) {
+								if (!item.classList || !item.classList.contains('is-collapsible')) continue;
+								const textEl = item.querySelector('.item-row > .text');
+								const key = textEl ? textEl.textContent.trim() : '';
+								
+								if (key && states[key] !== undefined) {
+									let group = null;
+									for (let i = 0; i < item.children.length; i++) {
+										if (item.children[i].classList.contains('VPSidebarGroup')) {
+											group = item.children[i];
+											break;
+										}
+									}
+									if (states[key]) {
+										item.classList.add('collapsed');
+										if (group) group.style.display = 'none';
+									} else {
+										item.classList.remove('collapsed');
+										if (group) group.style.display = '';
+									}
+								}
+							}
+						}
+					}
+				});
+				observer.observe(document.documentElement, { childList: true, subtree: true });
+				document.addEventListener('DOMContentLoaded', () => observer.disconnect());
+			} catch (e) {}
+		})();
 	</script>
 </head>
 <body>
 	<div class="Layout" id="Layout">
 		{{ template "VPNav" . }}
-		{{ if .HasSidebar }}
-		<div class="VPLocalNav">
-			<button class="menu" aria-expanded="false" onclick="toggleSidebar()">Menu</button>
-		</div>
-		{{ end }}
 		{{ template "VPSidebar" . }}
 		{{ template "VPContent" . }}
 		{{ template "VPFooter" . }}

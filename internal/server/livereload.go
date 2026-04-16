@@ -1,7 +1,7 @@
 package server
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -43,7 +43,7 @@ func (lr *LiveReload) Watch(root string) {
 		return nil
 	})
 	if err != nil {
-		log.Println("Warning: Failed to watch some directories:", err)
+		slog.Warn("Failed to watch some directories", "error", err)
 	}
 
 	go func() {
@@ -55,14 +55,14 @@ func (lr *LiveReload) Watch(root string) {
 				}
 				// We care about write and create operations
 				if event.Op&(fsnotify.Write|fsnotify.Create) != 0 {
-					log.Println("File changed, triggering reload:", event.Name)
+					slog.Info("File changed, triggering reload", "file", event.Name)
 					lr.broadcast("reload")
 				}
 			case err, ok := <-lr.watcher.Errors:
 				if !ok {
 					return
 				}
-				log.Println("Watcher error:", err)
+				slog.Error("Watcher error", "error", err)
 			}
 		}
 	}()
@@ -72,7 +72,7 @@ func (lr *LiveReload) Watch(root string) {
 func (lr *LiveReload) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Print("websocket upgrade error:", err)
+		slog.Error("websocket upgrade error", "error", err)
 		return
 	}
 
