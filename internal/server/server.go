@@ -2,7 +2,7 @@ package server
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -34,22 +34,33 @@ func (s *DevServer) Start(port int) error {
 	// WebSocket route for HMR / Live Reload
 	mux.HandleFunc("/ws", s.lr.ServeHTTP)
 
-	// Virtual routes for external CSS / JS assets
-	mux.HandleFunc("/assets/theme.css", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/css")
-		w.Write([]byte(theme.GetThemeCSS()))
-	})
-	mux.HandleFunc("/assets/app.js", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/javascript")
-		w.Write([]byte(theme.GetThemeJS(true))) // true for dev mode (injects WebSocket client)
-	})
+	// Dynamic routes for external CSS / JS assets
+	mux.HandleFunc("GET /assets/{assetname}", s.handleAsset)
 
 	// Handle all other requests
 	mux.HandleFunc("/", s.handleRequest)
 
 	addr := fmt.Sprintf(":%d", port)
-	log.Printf("GoPress Go Dev Server listening on http://localhost%s", addr)
+	slog.Info("GoPress Go Dev Server listening", "url", fmt.Sprintf("http://localhost%s", addr))
 	return http.ListenAndServe(addr, mux)
+}
+
+func (s *DevServer) handleAsset(w http.ResponseWriter, r *http.Request) {
+	assetname := r.PathValue("assetname")
+	slog.Info("Requesting asset", "assetname", assetname)
+
+	switch assetname {
+	case "theme.css":
+		w.Header().Set("Cache-Control", "public, max-age=600")
+		w.Header().Set("Content-Type", "text/css")
+		w.Write([]byte(theme.GetThemeCSS()))
+	case "app.js":
+		w.Header().Set("Cache-Control", "public, max-age=600")
+		w.Header().Set("Content-Type", "application/javascript")
+		w.Write([]byte(theme.GetThemeJS(true))) // true for dev mode (injects WebSocket client)
+	default:
+		http.NotFound(w, r)
+	}
 }
 
 func (s *DevServer) handleRequest(w http.ResponseWriter, r *http.Request) {
@@ -59,11 +70,11 @@ func (s *DevServer) handleRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Hot reload config on each request to pick up changes
-	siteConfig, err := config.LoadConfig(s.Root)
-	if err == nil {
-		s.SiteConfig = siteConfig
-	}
+	// // Hot reload config on each request to pick up changes
+	// siteConfig, err := config.LoadConfig(s.Root)
+	// if err == nil {
+	// 	s.SiteConfig = siteConfig
+	// }
 
 	// Determine the corresponding markdown file
 	path := r.URL.Path

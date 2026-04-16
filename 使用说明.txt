@@ -1,3 +1,7 @@
 go build .\cmd\gopress
+go build -ldflags="-s -w" .\cmd\gopress
 
 gopress.exe build docs
+gopress.exe dev docs
+
+go run .\cmd\gopress dev docs

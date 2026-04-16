@@ -1,0 +1,425 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>My GoPress WebSite</title>
+	<meta name="description" content="A gopress website">
+	<link rel="stylesheet" href="/assets/theme.css">
+	<script>
+		const savedTheme = localStorage.getItem('gopress-theme-appearance');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+			document.documentElement.classList.add('dark');
+		}
+
+		// 提前恢复侧边栏折叠状态，在DOM解析期间立即应用，彻底避免页面渲染闪烁
+		(function() {
+			try {
+				const saved = localStorage.getItem('gopress-sidebar-states');
+				if (!saved) return;
+				const states = JSON.parse(saved);
+				
+				const observer = new MutationObserver((mutations) => {
+					for (const mutation of mutations) {
+						for (const node of mutation.addedNodes) {
+							if (node.nodeType !== 1) continue;
+							
+							const items = node.classList && node.classList.contains('VPSidebarItem') 
+								? [node] 
+								: node.querySelectorAll ? Array.from(node.querySelectorAll('.VPSidebarItem.is-collapsible')) : [];
+							
+							for (const item of items) {
+								if (!item.classList || !item.classList.contains('is-collapsible')) continue;
+								const textEl = item.querySelector('.item-row > .text');
+								const key = textEl ? textEl.textContent.trim() : '';
+								
+								if (key && states[key] !== undefined) {
+									let group = null;
+									for (let i = 0; i < item.children.length; i++) {
+										if (item.children[i].classList.contains('VPSidebarGroup')) {
+											group = item.children[i];
+											break;
+										}
+									}
+									if (states[key]) {
+										item.classList.add('collapsed');
+										if (group) group.style.display = 'none';
+									} else {
+										item.classList.remove('collapsed');
+										if (group) group.style.display = '';
+									}
+								}
+							}
+						}
+					}
+				});
+				observer.observe(document.documentElement, { childList: true, subtree: true });
+				document.addEventListener('DOMContentLoaded', () => observer.disconnect());
+			} catch (e) {}
+		})();
+	</script>
+</head>
+<body>
+	<div class="Layout" id="Layout">
+		
+<header class="VPNav">
+	<div class="VPNavBar">
+		<div class="title">
+			<a href="/">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo light-only">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo dark-only">
+				My GoPress WebSite
+			</a>
+		</div>
+		<div class="content">
+			<nav class="VPNavBarMenu">
+				
+				<a class="VPLink" href="/index.html">Home</a>
+				
+				<a class="VPLink" href="/guide/index.html">Guide</a>
+				
+				<a class="VPLink" href="/icetest/index.html">IceTest</a>
+				
+			</nav>
+			<div class="VPNavBarAppearance">
+				<button class="VPSwitchAppearance" type="button" aria-label="Toggle dark mode" onclick="toggleDarkMode()">
+					<span class="vpi-sun sun">☀️</span>
+					<span class="vpi-moon moon">🌙</span>
+				</button>
+			</div>
+			<div class="VPNavBarSocialLinks">
+				
+				<a class="VPSocialLink" href="https://github.com/icetech233/gopress" target="_blank" rel="noopener" aria-label="github">
+					<span class="vpi-social vpi-social-github">github</span>
+				</a>
+				
+			</div>
+			
+			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">☰</button>
+			
+		</div>
+	</div>
+</header>
+
+		
+
+<aside class="VPSidebar" id="VPSidebar">
+	<nav class="nav" id="VPSidebarNav">
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">导航</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/guide/index.html"><span class="text">导航介绍</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem is-collapsible ">
+	<div class="item-row">
+		
+		<span class="text">一级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级菜单首页</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级次页面</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem is-collapsible collapsed">
+	<div class="item-row">
+		
+		<span class="text">二级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" style="display: none;">
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">三级</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">历史记录</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-localstorage-persistence.html"><span class="text">折叠状态持久化</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-state-refactor.html"><span class="text">侧边栏状态重构</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-fouc-optimization.html"><span class="text">侧边栏防闪烁</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/themeable-logo.html"><span class="text">站点logo功能</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">IceTest</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+	</nav>
+</aside>
+
+
+		
+<div class="VPContent " id="VPContent">
+	
+		
+<div class="VPDoc">
+	<div class="container">
+		<div class="content">
+			<main class="main" id="main-content">
+				<h1 id="heading">侧边栏折叠状态重构技术方案</h1>
+<h2 id="1-">1. 背景与问题分析</h2>
+<p>在原有的 VitePress (GoPress) 主题实现中，侧边栏的折叠状态存在页面切换时“一闪而过”的卡顿和闪烁问题。经过分析，主要原因有以下两点：</p>
+<ol>
+<li>
+<p><strong>频繁且分散的 <code>localStorage</code> 读写</strong>：<br>
+原逻辑中，针对每一个可折叠的侧边栏项（<code>VPSidebarItem</code>），都会单独在 <code>localStorage</code> 中生成一条记录（如 <code>gopress-sidebar-XXX</code>）。在页面初始化或恢复状态时，遍历所有侧边栏项并在循环体内频繁调用同步阻塞的 <code>localStorage.getItem()</code>，导致 IO 性能较差，当侧边栏项较多时容易引发渲染卡顿。</p>
+</li>
+<li>
+<p><strong>SPA 页面切换时的状态丢失</strong>：<br>
+项目使用了 <code>navigateTo</code> 方法实现无刷新的 SPA 路由跳转。在通过 <code>fetch</code> 获取新页面 HTML 并替换 <code>Layout</code> 容器的 <code>innerHTML</code> 后，新生成的 DOM 元素（包括侧边栏）并未重新应用之前保存的折叠状态。这导致新页面的侧边栏会短暂显示为默认的“全部展开”状态，从而产生视觉上的闪烁。</p>
+</li>
+</ol>
+<h2 id="2-">2. 优化方案与重构目标</h2>
+<p>针对上述问题，我们对侧边栏状态的管理逻辑进行了以下重构：</p>
+<ul>
+<li><strong>状态批量存储 (Batch Storage)</strong>：将所有侧边栏项的折叠状态统一合并为一个 JSON 对象，并保存在单一的 <code>localStorage</code> 键（<code>gopress-sidebar-states</code>）下。这样在状态恢复时，只需读取和解析一次 <code>localStorage</code>，极大地降低了 IO 开销。</li>
+<li><strong>状态即时恢复 (Immediate Restoration)</strong>：在 SPA 路由跳转（<code>navigateTo</code>）替换页面内容之后，立即主动调用 <code>restoreSidebarState()</code>，确保新渲染的侧边栏 DOM 能够在浏览器下一次重绘前应用正确的折叠状态，消除闪烁。</li>
+</ul>
+<h2 id="3-">3. 具体实现细节</h2>
+<h3 id="31-">3.1 状态存储与读取机制的改造</h3>
+<p><strong>修改前</strong>：</p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">function</span> saveSidebarItemState(item, collapsed) {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">const</span> key <span style="color:#000;font-weight:bold">=</span> getSidebarStateKey(item);
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> (key) localStorage.setItem(key, collapsed <span style="color:#000;font-weight:bold">?</span> <span style="color:#d14">&#39;1&#39;</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#d14">&#39;0&#39;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre><p><strong>修改后</strong>：<br>
+改为集中式的 JSON 存储机制：</p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">function</span> saveSidebarItemState(item, collapsed) {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">const</span> key <span style="color:#000;font-weight:bold">=</span> getSidebarStateKey(item);
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> (<span style="color:#000;font-weight:bold">!</span>key) <span style="color:#000;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">let</span> states <span style="color:#000;font-weight:bold">=</span> {};
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">const</span> saved <span style="color:#000;font-weight:bold">=</span> localStorage.getItem(<span style="color:#d14">&#39;gopress-sidebar-states&#39;</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">if</span> (saved) states <span style="color:#000;font-weight:bold">=</span> JSON.parse(saved);
+</span></span><span style="display:flex;"><span>	} <span style="color:#000;font-weight:bold">catch</span> (e) {}
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	states[key] <span style="color:#000;font-weight:bold">=</span> collapsed;
+</span></span><span style="display:flex;"><span>	localStorage.setItem(<span style="color:#d14">&#39;gopress-sidebar-states&#39;</span>, JSON.stringify(states));
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre><p>在 <code>restoreSidebarState</code> 方法中，改为一次性读取解析：</p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">function</span> restoreSidebarState() {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">let</span> states <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">try</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">const</span> saved <span style="color:#000;font-weight:bold">=</span> localStorage.getItem(<span style="color:#d14">&#39;gopress-sidebar-states&#39;</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">if</span> (saved) states <span style="color:#000;font-weight:bold">=</span> JSON.parse(saved);
+</span></span><span style="display:flex;"><span>	} <span style="color:#000;font-weight:bold">catch</span> (e) {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> (<span style="color:#000;font-weight:bold">!</span>states) <span style="color:#000;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#0086b3">document</span>.querySelectorAll(<span style="color:#d14">&#39;.VPSidebarItem.is-collapsible&#39;</span>).forEach(<span style="color:#000;font-weight:bold">function</span>(item) {
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">const</span> key <span style="color:#000;font-weight:bold">=</span> getSidebarStateKey(item);
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">if</span> (<span style="color:#000;font-weight:bold">!</span>key <span style="color:#000;font-weight:bold">||</span> states[key] <span style="color:#000;font-weight:bold">===</span> <span style="color:#000;font-weight:bold">undefined</span>) <span style="color:#000;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#998;font-style:italic">// ... 根据 states[key] 的布尔值恢复 class 和 style ...
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	});
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre><h3 id="32-spa-">3.2 SPA 路由跳转后的状态同步</h3>
+<p>在 <code>navigateTo</code> 函数中，完成 DOM 替换后，显式调用状态恢复逻辑：</p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">async</span> <span style="color:#000;font-weight:bold">function</span> navigateTo(path, push <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// ... fetch 新页面内容 ...
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">const</span> newContent <span style="color:#000;font-weight:bold">=</span> doc.getElementById(<span style="color:#d14">&#39;Layout&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">if</span> (newContent) {
+</span></span><span style="display:flex;"><span>        <span style="color:#0086b3">document</span>.getElementById(<span style="color:#d14">&#39;Layout&#39;</span>).innerHTML <span style="color:#000;font-weight:bold">=</span> newContent.innerHTML;
+</span></span><span style="display:flex;"><span>        <span style="color:#998;font-style:italic">// ... 更新 title 和 history ...
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#998;font-style:italic">// 【新增】页面切换后立即恢复侧边栏状态，避免闪烁
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>        restoreSidebarState();
+</span></span><span style="display:flex;"><span>    } <span style="color:#000;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#0086b3">window</span>.location.href <span style="color:#000;font-weight:bold">=</span> path; <span style="color:#998;font-style:italic">// Fallback
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre><h2 id="4-">4. 总结与收益</h2>
+<p>通过此次重构：</p>
+<ol>
+<li><strong>性能提升</strong>：侧边栏状态的 <code>localStorage</code> 读取次数由 <code>O(N)</code> 降为 <code>O(1)</code>，显著减少了同步阻塞时间。</li>
+<li><strong>体验优化</strong>：彻底解决了 SPA 无刷新页面切换时的侧边栏折叠状态闪烁问题，保证了导航切换时的视觉连贯性和顺滑度。</li>
+<li><strong>存储整洁</strong>：避免了在用户浏览器的 <code>localStorage</code> 中散落大量的、碎片化的 <code>gopress-sidebar-*</code> 键值对，使缓存管理更加规范。</li>
+</ol>
+
+			</main>
+		</div>
+	</div>
+</div>
+
+	
+</div>
+
+		
+
+<footer class="VPFooter ">
+	<div class="container">
+		<p class="message">Released under the <a href="https://github.com/vuejs/vitepress/blob/main/LICENSE">MIT License</a>.</p>
+		<p class="copyright">Copyright © 2026 GoPress Contributors</p>
+	</div>
+</footer>
+
+
+	</div>
+	<script type="module" src="/assets/app.js"></script>
+</body>
+</html>

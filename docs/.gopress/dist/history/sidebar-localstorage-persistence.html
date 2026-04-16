@@ -1,0 +1,509 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>My GoPress WebSite</title>
+	<meta name="description" content="A gopress website">
+	<link rel="stylesheet" href="/assets/theme.css">
+	<script>
+		const savedTheme = localStorage.getItem('gopress-theme-appearance');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+			document.documentElement.classList.add('dark');
+		}
+
+		// 提前恢复侧边栏折叠状态，在DOM解析期间立即应用，彻底避免页面渲染闪烁
+		(function() {
+			try {
+				const saved = localStorage.getItem('gopress-sidebar-states');
+				if (!saved) return;
+				const states = JSON.parse(saved);
+				
+				const observer = new MutationObserver((mutations) => {
+					for (const mutation of mutations) {
+						for (const node of mutation.addedNodes) {
+							if (node.nodeType !== 1) continue;
+							
+							const items = node.classList && node.classList.contains('VPSidebarItem') 
+								? [node] 
+								: node.querySelectorAll ? Array.from(node.querySelectorAll('.VPSidebarItem.is-collapsible')) : [];
+							
+							for (const item of items) {
+								if (!item.classList || !item.classList.contains('is-collapsible')) continue;
+								const textEl = item.querySelector('.item-row > .text');
+								const key = textEl ? textEl.textContent.trim() : '';
+								
+								if (key && states[key] !== undefined) {
+									let group = null;
+									for (let i = 0; i < item.children.length; i++) {
+										if (item.children[i].classList.contains('VPSidebarGroup')) {
+											group = item.children[i];
+											break;
+										}
+									}
+									if (states[key]) {
+										item.classList.add('collapsed');
+										if (group) group.style.display = 'none';
+									} else {
+										item.classList.remove('collapsed');
+										if (group) group.style.display = '';
+									}
+								}
+							}
+						}
+					}
+				});
+				observer.observe(document.documentElement, { childList: true, subtree: true });
+				document.addEventListener('DOMContentLoaded', () => observer.disconnect());
+			} catch (e) {}
+		})();
+	</script>
+</head>
+<body>
+	<div class="Layout" id="Layout">
+		
+<header class="VPNav">
+	<div class="VPNavBar">
+		<div class="title">
+			<a href="/">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo light-only">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo dark-only">
+				My GoPress WebSite
+			</a>
+		</div>
+		<div class="content">
+			<nav class="VPNavBarMenu">
+				
+				<a class="VPLink" href="/index.html">Home</a>
+				
+				<a class="VPLink" href="/guide/index.html">Guide</a>
+				
+				<a class="VPLink" href="/icetest/index.html">IceTest</a>
+				
+			</nav>
+			<div class="VPNavBarAppearance">
+				<button class="VPSwitchAppearance" type="button" aria-label="Toggle dark mode" onclick="toggleDarkMode()">
+					<span class="vpi-sun sun">☀️</span>
+					<span class="vpi-moon moon">🌙</span>
+				</button>
+			</div>
+			<div class="VPNavBarSocialLinks">
+				
+				<a class="VPSocialLink" href="https://github.com/icetech233/gopress" target="_blank" rel="noopener" aria-label="github">
+					<span class="vpi-social vpi-social-github">github</span>
+				</a>
+				
+			</div>
+			
+			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">☰</button>
+			
+		</div>
+	</div>
+</header>
+
+		
+
+<aside class="VPSidebar" id="VPSidebar">
+	<nav class="nav" id="VPSidebarNav">
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">导航</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/guide/index.html"><span class="text">导航介绍</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem is-collapsible ">
+	<div class="item-row">
+		
+		<span class="text">一级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级菜单首页</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级次页面</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem is-collapsible collapsed">
+	<div class="item-row">
+		
+		<span class="text">二级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" style="display: none;">
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">三级</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">历史记录</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-localstorage-persistence.html"><span class="text">折叠状态持久化</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-state-refactor.html"><span class="text">侧边栏状态重构</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-fouc-optimization.html"><span class="text">侧边栏防闪烁</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/themeable-logo.html"><span class="text">站点logo功能</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">IceTest</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+	</nav>
+</aside>
+
+
+		
+<div class="VPContent " id="VPContent">
+	
+		
+<div class="VPDoc">
+	<div class="container">
+		<div class="content">
+			<main class="main" id="main-content">
+				<h1 id="localstorage-">侧边栏折叠状态持久化方案（localStorage 版）</h1>
+<h2 id="heading">问题描述</h2>
+<p>当用户在侧边栏展开/折叠某个分组后，点击链接切换页面或刷新浏览器，<code>navigateTo()</code> 函数会用服务端返回的新 HTML 整体替换 <code>#Layout</code> 的 <code>innerHTML</code>，导致：</p>
+<ol>
+<li>侧边栏 DOM 被销毁并重建</li>
+<li>用户手动调整的折叠/展开状态全部丢失</li>
+<li>服务端渲染的初始状态（由 <code>Collapsed</code> 字段决定）重新生效</li>
+</ol>
+<hr>
+<h2 id="heading-1">方案选择</h2>
+<h3 id="-localstorage--dom">为什么选 localStorage 而不是局部替换 DOM</h3>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>localStorage 持久化</strong></td>
+<td>简单直接，无需修改导航核心逻辑；状态跨页面、跨刷新、跨重启浏览器都能保留</td>
+<td>依赖文本 key 匹配，同名分组会有歧义</td>
+</tr>
+<tr>
+<td>局部替换 DOM</td>
+<td>无歧义，状态天然保留</td>
+<td>需处理复杂的页面跳转场景矩阵（4 种），改动范围大</td>
+</tr>
+</tbody>
+</table>
+<p><strong>最终选择 localStorage 方案</strong>，因为它改动最小，且能彻底解决跨页面刷新的状态丢失问题。</p>
+<hr>
+<h2 id="heading-2">实现逻辑</h2>
+<h3 id="1-">1. 写入逻辑（用户操作触发）</h3>
+<p>在 <code>toggleSidebarGroup</code> 函数中，每次用户点击折叠/展开按钮时，将当前状态写入 <code>localStorage</code>：</p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">function</span> saveSidebarItemState(item, collapsed) {
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">const</span> key <span style="color:#000;font-weight:bold">=</span> getSidebarStateKey(item);
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">if</span> (key) localStorage.setItem(key, collapsed <span style="color:#000;font-weight:bold">?</span> <span style="color:#d14">&#39;1&#39;</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#d14">&#39;0&#39;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">function</span> getSidebarStateKey(item) {
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">const</span> textEl <span style="color:#000;font-weight:bold">=</span> item.querySelector(<span style="color:#d14">&#39;.item-row &gt; .text&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">return</span> <span style="color:#d14">&#39;gopress-sidebar-&#39;</span> <span style="color:#000;font-weight:bold">+</span> (textEl <span style="color:#000;font-weight:bold">?</span> textEl.textContent.trim() <span style="color:#000;font-weight:bold">:</span> <span style="color:#d14">&#39;&#39;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre><h3 id="2-">2. 读取逻辑（页面加载触发）</h3>
+<p>在 <code>DOMContentLoaded</code> 事件中，从 <code>localStorage</code> 读取之前保存的状态并应用到 DOM：</p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">function</span> restoreSidebarState() {
+</span></span><span style="display:flex;"><span>    <span style="color:#0086b3">document</span>.querySelectorAll(<span style="color:#d14">&#39;.VPSidebarItem.is-collapsible&#39;</span>).forEach(<span style="color:#000;font-weight:bold">function</span>(item) {
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">const</span> key <span style="color:#000;font-weight:bold">=</span> getSidebarStateKey(item);
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">const</span> saved <span style="color:#000;font-weight:bold">=</span> localStorage.getItem(key);
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">if</span> (saved <span style="color:#000;font-weight:bold">===</span> <span style="color:#000;font-weight:bold">null</span>) <span style="color:#000;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">let</span> group <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">for</span> (<span style="color:#000;font-weight:bold">let</span> i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>; i <span style="color:#000;font-weight:bold">&lt;</span> item.children.length; i<span style="color:#000;font-weight:bold">++</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#000;font-weight:bold">if</span> (item.children[i].classList.contains(<span style="color:#d14">&#39;VPSidebarGroup&#39;</span>)) {
+</span></span><span style="display:flex;"><span>                group <span style="color:#000;font-weight:bold">=</span> item.children[i];
+</span></span><span style="display:flex;"><span>                <span style="color:#000;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">if</span> (saved <span style="color:#000;font-weight:bold">===</span> <span style="color:#d14">&#39;1&#39;</span>) {
+</span></span><span style="display:flex;"><span>            item.classList.add(<span style="color:#d14">&#39;collapsed&#39;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#000;font-weight:bold">if</span> (group) group.style.display <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;none&#39;</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#000;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            item.classList.remove(<span style="color:#d14">&#39;collapsed&#39;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#000;font-weight:bold">if</span> (group) group.style.display <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#39;&#39;</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#0086b3">document</span>.addEventListener(<span style="color:#d14">&#39;DOMContentLoaded&#39;</span>, restoreSidebarState);
+</span></span></code></pre><hr>
+<h2 id="heading-3">关键细节</h2>
+<h3 id="heading-4">状态优先级</h3>
+<ol>
+<li><strong>用户手动调整的状态</strong>（localStorage）&gt; 服务端配置的初始状态（Collapsed 字段）</li>
+<li>如果没有 localStorage 记录，完全按服务端配置渲染</li>
+<li>服务端配置仅作为首次访问的默认值</li>
+</ol>
+<h3 id="heading-5">存储格式</h3>
+<table>
+<thead>
+<tr>
+<th>Key 格式</th>
+<th>Value</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gopress-sidebar-{分组文本}</code></td>
+<td><code>1</code></td>
+<td>折叠状态</td>
+</tr>
+<tr>
+<td><code>gopress-sidebar-{分组文本}</code></td>
+<td><code>0</code></td>
+<td>展开状态</td>
+</tr>
+</tbody>
+</table>
+<h3 id="heading-6">边界情况处理</h3>
+<ol>
+<li><strong>同名分组</strong>：如果侧边栏存在多个文本完全相同的分组，会共享同一个 localStorage 状态</li>
+<li><strong>分组文本修改</strong>：如果分组文本在配置中被修改，之前的状态会失效，回到服务端默认值</li>
+<li><strong>清空 localStorage</strong>：所有状态丢失，回到服务端默认值</li>
+</ol>
+<hr>
+<h2 id="heading-7">需修改的文件</h2>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>修改内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>internal/theme/theme.js</code></td>
+<td>新增状态写入和读取函数，修改 toggleSidebarGroup 同步状态，添加 DOMContentLoaded 事件监听</td>
+</tr>
+</tbody>
+</table>
+<p>服务端（Go）、模板（layout.tmpl）、样式（theme.css）均<strong>无需改动</strong>。</p>
+<hr>
+<h2 id="heading-8">测试步骤</h2>
+<ol>
+<li>访问任意文档页，展开/折叠侧边栏分组</li>
+<li>点击链接跳转到其他文档页，检查折叠状态是否保留</li>
+<li>刷新浏览器，检查折叠状态是否保留</li>
+<li>重启浏览器，检查折叠状态是否保留</li>
+<li>打开新标签页访问同一站点，检查折叠状态是否同步（localStorage 同源共享）</li>
+</ol>
+<hr>
+<h2 id="heading-9">优缺点总结</h2>
+<h3 id="heading-10">优点</h3>
+<ul>
+<li><strong>改动最小</strong>：仅修改 theme.js，不影响导航核心逻辑</li>
+<li><strong>状态持久化</strong>：跨页面、跨刷新、跨重启浏览器都能保留</li>
+<li><strong>向后兼容</strong>：没有 localStorage 记录时，完全按服务端配置渲染</li>
+<li><strong>简单直观</strong>：代码逻辑清晰，易于维护</li>
+</ul>
+<h3 id="heading-11">缺点</h3>
+<ul>
+<li><strong>同名分组歧义</strong>：如果侧边栏存在多个文本完全相同的分组，会共享同一个状态</li>
+<li><strong>依赖文本内容</strong>：分组文本修改会导致之前的状态失效</li>
+</ul>
+<h3 id="heading-12">优化建议</h3>
+<p>如果需要避免同名分组歧义，可以将 <code>getSidebarStateKey</code> 改为生成更稳定的 key，例如：</p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">function</span> getSidebarStateKey(item) {
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// 生成唯一路径：父级文本 → 子级文本 → 当前文本
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">let</span> path <span style="color:#000;font-weight:bold">=</span> [];
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">let</span> current <span style="color:#000;font-weight:bold">=</span> item;
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">while</span> (current) {
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">const</span> textEl <span style="color:#000;font-weight:bold">=</span> current.querySelector(<span style="color:#d14">&#39;.item-row &gt; .text&#39;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">if</span> (textEl) path.unshift(textEl.textContent.trim());
+</span></span><span style="display:flex;"><span>        current <span style="color:#000;font-weight:bold">=</span> current.closest(<span style="color:#d14">&#39;.VPSidebarGroup&#39;</span>)<span style="color:#000;font-weight:bold">?</span>.parentElement<span style="color:#000;font-weight:bold">?</span>.closest(<span style="color:#d14">&#39;.VPSidebarItem&#39;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">return</span> <span style="color:#d14">&#39;gopress-sidebar-&#39;</span> <span style="color:#000;font-weight:bold">+</span> path.join(<span style="color:#d14">&#39;&gt;&#39;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre><p>这样可以生成类似 <code>gopress-sidebar-一级菜单&gt;二级菜单</code> 的唯一路径 key，彻底解决同名分组歧义问题。</p>
+
+			</main>
+		</div>
+	</div>
+</div>
+
+	
+</div>
+
+		
+
+<footer class="VPFooter ">
+	<div class="container">
+		<p class="message">Released under the <a href="https://github.com/vuejs/vitepress/blob/main/LICENSE">MIT License</a>.</p>
+		<p class="copyright">Copyright © 2026 GoPress Contributors</p>
+	</div>
+</footer>
+
+
+	</div>
+	<script type="module" src="/assets/app.js"></script>
+</body>
+</html>

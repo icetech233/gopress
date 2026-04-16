@@ -10,6 +10,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
@@ -24,6 +26,52 @@
 		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
 			document.documentElement.classList.add('dark');
 		}
+
+		// 提前恢复侧边栏折叠状态，在DOM解析期间立即应用，彻底避免页面渲染闪烁
+		(function() {
+			try {
+				const saved = localStorage.getItem('gopress-sidebar-states');
+				if (!saved) return;
+				const states = JSON.parse(saved);
+				
+				const observer = new MutationObserver((mutations) => {
+					for (const mutation of mutations) {
+						for (const node of mutation.addedNodes) {
+							if (node.nodeType !== 1) continue;
+							
+							const items = node.classList && node.classList.contains('VPSidebarItem') 
+								? [node] 
+								: node.querySelectorAll ? Array.from(node.querySelectorAll('.VPSidebarItem.is-collapsible')) : [];
+							
+							for (const item of items) {
+								if (!item.classList || !item.classList.contains('is-collapsible')) continue;
+								const textEl = item.querySelector('.item-row > .text');
+								const key = textEl ? textEl.textContent.trim() : '';
+								
+								if (key && states[key] !== undefined) {
+									let group = null;
+									for (let i = 0; i < item.children.length; i++) {
+										if (item.children[i].classList.contains('VPSidebarGroup')) {
+											group = item.children[i];
+											break;
+										}
+									}
+									if (states[key]) {
+										item.classList.add('collapsed');
+										if (group) group.style.display = 'none';
+									} else {
+										item.classList.remove('collapsed');
+										if (group) group.style.display = '';
+									}
+								}
+							}
+						}
+					}
+				});
+				observer.observe(document.documentElement, { childList: true, subtree: true });
+				document.addEventListener('DOMContentLoaded', () => observer.disconnect());
+			} catch (e) {}
+		})();
 	</script>
 </head>
 <body>
@@ -33,7 +81,8 @@
 	<div class="VPNavBar">
 		<div class="title">
 			<a href="/">
-				
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo light-only">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo dark-only">
 				My GoPress WebSite
 			</a>
 		</div>
@@ -60,14 +109,11 @@
 				</a>
 				
 			</div>
-			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">
-				☰
-			</button>
+			
 		</div>
 	</div>
 </header>
 
-		
 		
 
 
@@ -136,7 +182,7 @@
 
 <footer class="VPFooter is-home">
 	<div class="container">
-		<p class="message">Released under the MIT License.</p>
+		<p class="message">Released under the <a href="https://github.com/vuejs/vitepress/blob/main/LICENSE">MIT License</a>.</p>
 		<p class="copyright">Copyright © 2026 GoPress Contributors</p>
 	</div>
 </footer>
