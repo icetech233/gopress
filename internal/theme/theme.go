@@ -42,6 +42,12 @@ type Feature struct {
 	Details string `json:"details" yaml:"details"`
 }
 
+// PageLink represents a link to another page (e.g. prev/next).
+type PageLink struct {
+	Text string `json:"text" yaml:"text"`
+	Link string `json:"link" yaml:"link"`
+}
+
 // PageData represents data passed to the template.
 type PageData struct {
 	SiteConfig  *config.SiteConfig
@@ -53,6 +59,8 @@ type PageData struct {
 	Features    []Feature
 	SidebarData []config.SidebarItem
 	HasSidebar  bool
+	Prev        *PageLink
+	Next        *PageLink
 }
 
 func str(v interface{}) string {
@@ -110,6 +118,104 @@ func parseFeatures(meta map[string]interface{}) []Feature {
 	return features
 }
 
+// parsePrevNextLinks 从侧边栏推断上一页/下一页链接，或者从页面前置元数据中读取
+// 参数：
+//
+//	meta - 页面前置元数据
+//	matchedSidebar - 当前匹配的侧边栏配置
+//	currentPath - 当前页面路径
+//
+// 返回值：
+//
+//	上一页链接和下一页链接的指针，如果不存在则返回 nil
+func parsePrevNextLinks(meta map[string]interface{}, matchedSidebar []config.SidebarItem, currentPath string) (*PageLink, *PageLink) {
+	var prev, next *PageLink
+
+	// 1. 将嵌套的侧边栏结构扁平化为一维数组，方便查找当前项及其相邻项
+	flat := flattenSidebar(matchedSidebar)
+
+	// 2. 在扁平化后的数组中查找当前页面的索引
+	idx := -1
+	for i, item := range flat {
+		// 匹配当前页面路径，考虑.html 后缀的情况
+		if item.Link == currentPath || item.Link == currentPath+".html" || item.Link+".html" == currentPath {
+			idx = i
+			break
+		}
+	}
+
+	// 3. 从侧边栏推断上一页和下一页链接
+	if idx > 0 {
+		prev = &PageLink{Text: flat[idx-1].Text, Link: flat[idx-1].Link}
+	}
+	if idx >= 0 && idx < len(flat)-1 {
+		next = &PageLink{Text: flat[idx+1].Text, Link: flat[idx+1].Link}
+	}
+
+	// 4. 使用前置元数据中的配置覆盖侧边栏推断的链接
+	if meta != nil {
+		prev = parsePageLinkFromMeta(meta, "prev", prev)
+		next = parsePageLinkFromMeta(meta, "next", next)
+	}
+
+	return prev, next
+}
+
+// flattenSidebar 将嵌套的侧边栏结构扁平化为一维数组
+// 只保留带有链接的侧边栏项，递归处理所有子菜单
+func flattenSidebar(items []config.SidebarItem) []config.SidebarItem {
+	var flat []config.SidebarItem
+	var flatten func(items []config.SidebarItem)
+	flatten = func(items []config.SidebarItem) {
+		for _, item := range items {
+			// 只添加带有链接的侧边栏项
+			if item.Link != "" {
+				flat = append(flat, item)
+			}
+			// 递归处理子菜单
+			if len(item.Items) > 0 {
+				flatten(item.Items)
+			}
+		}
+	}
+	flatten(items)
+	return flat
+}
+
+// parsePageLinkFromMeta 从元数据中解析页面链接
+// 参数：
+//
+//	meta - 页面前置元数据
+//	key - 元数据键名（"prev"或"next"）
+//	defaultLink - 默认链接，当元数据未配置时使用
+//
+// 返回值：
+//
+//	解析后的 PageLink 指针，如果禁用或解析失败则返回 nil 或默认值
+func parsePageLinkFromMeta(meta map[string]interface{}, key string, defaultLink *PageLink) *PageLink {
+	v, ok := meta[key]
+	if !ok {
+		return defaultLink
+	}
+
+	// 如果设置为 false，则禁用链接
+	if b, isBool := v.(bool); isBool && !b {
+		return nil
+	}
+
+	// 将前置元数据转换为 PageLink 结构体
+	cleanData := convertMap(v)
+	b, err := json.Marshal(cleanData)
+	if err == nil {
+		var pl PageLink
+		if err := json.Unmarshal(b, &pl); err == nil && pl.Text != "" {
+			return &pl
+		}
+	}
+
+	return defaultLink
+}
+
 // GetThemeCSS returns the base CSS for the theme.
 func GetThemeCSS() string {
 	return themeCSS
@@ -159,6 +265,8 @@ func GenerateHTML(siteConfig *config.SiteConfig, result *markdown.RenderResult, 
 		matchedSidebar = sidebar
 	}
 
+	prev, next := parsePrevNextLinks(result.Meta, matchedSidebar, currentPath)
+
 	data := PageData{
 		SiteConfig:  siteConfig,
 		PageTitle:   result.Title,
@@ -169,6 +277,8 @@ func GenerateHTML(siteConfig *config.SiteConfig, result *markdown.RenderResult, 
 		Features:    features,
 		SidebarData: matchedSidebar,
 		HasSidebar:  !isHome && len(matchedSidebar) > 0,
+		Prev:        prev,
+		Next:        next,
 	}
 
 	var buf bytes.Buffer

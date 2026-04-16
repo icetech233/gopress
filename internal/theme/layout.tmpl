@@ -134,6 +134,28 @@
 			<main class="main" id="main-content">
 				{{ .Content }}
 			</main>
+			<footer class="VPDocFooter">
+				{{ if or .Prev .Next }}
+				<div class="prev-next">
+					{{ if .Prev }}
+					<div class="pager">
+						<a class="pager-link prev" href="{{ .Prev.Link }}">
+							<span class="desc">上一页</span>
+							<span class="title">{{ .Prev.Text }}</span>
+						</a>
+					</div>
+					{{ end }}
+					{{ if .Next }}
+					<div class="pager" style="margin-left: auto;">
+						<a class="pager-link next" href="{{ .Next.Link }}">
+							<span class="desc">下一页</span>
+							<span class="title">{{ .Next.Text }}</span>
+						</a>
+					</div>
+					{{ end }}
+				</div>
+				{{ end }}
+			</footer>
 		</div>
 	</div>
 </div>

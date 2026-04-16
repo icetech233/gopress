@@ -1,0 +1,613 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>My GoPress WebSite</title>
+	<meta name="description" content="A gopress website">
+	<link rel="stylesheet" href="/assets/theme.css">
+	<script>
+		const savedTheme = localStorage.getItem('gopress-theme-appearance');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+			document.documentElement.classList.add('dark');
+		}
+
+		// 提前恢复侧边栏折叠状态，在DOM解析期间立即应用，彻底避免页面渲染闪烁
+		(function() {
+			try {
+				const saved = localStorage.getItem('gopress-sidebar-states');
+				if (!saved) return;
+				const states = JSON.parse(saved);
+				
+				const observer = new MutationObserver((mutations) => {
+					for (const mutation of mutations) {
+						for (const node of mutation.addedNodes) {
+							if (node.nodeType !== 1) continue;
+							
+							const items = node.classList && node.classList.contains('VPSidebarItem') 
+								? [node] 
+								: node.querySelectorAll ? Array.from(node.querySelectorAll('.VPSidebarItem.is-collapsible')) : [];
+							
+							for (const item of items) {
+								if (!item.classList || !item.classList.contains('is-collapsible')) continue;
+								const textEl = item.querySelector('.item-row > .text');
+								const key = textEl ? textEl.textContent.trim() : '';
+								
+								if (key && states[key] !== undefined) {
+									let group = null;
+									for (let i = 0; i < item.children.length; i++) {
+										if (item.children[i].classList.contains('VPSidebarGroup')) {
+											group = item.children[i];
+											break;
+										}
+									}
+									if (states[key]) {
+										item.classList.add('collapsed');
+										if (group) group.style.display = 'none';
+									} else {
+										item.classList.remove('collapsed');
+										if (group) group.style.display = '';
+									}
+								}
+							}
+						}
+					}
+				});
+				observer.observe(document.documentElement, { childList: true, subtree: true });
+				document.addEventListener('DOMContentLoaded', () => observer.disconnect());
+			} catch (e) {}
+		})();
+	</script>
+</head>
+<body>
+	<div class="Layout" id="Layout">
+		
+<header class="VPNav">
+	<div class="VPNavBar">
+		<div class="title">
+			<a href="/">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo light-only">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo dark-only">
+				My GoPress WebSite
+			</a>
+		</div>
+		<div class="content">
+			<nav class="VPNavBarMenu">
+				
+				<a class="VPLink" href="/index.html">Home</a>
+				
+				<a class="VPLink" href="/guide/index.html">Guide</a>
+				
+				<a class="VPLink" href="/icetest/index.html">IceTest</a>
+				
+			</nav>
+			<div class="VPNavBarAppearance">
+				<button class="VPSwitchAppearance" type="button" aria-label="Toggle dark mode" onclick="toggleDarkMode()">
+					<span class="vpi-sun sun">☀️</span>
+					<span class="vpi-moon moon">🌙</span>
+				</button>
+			</div>
+			<div class="VPNavBarSocialLinks">
+				
+				<a class="VPSocialLink" href="https://github.com/icetech233/gopress" target="_blank" rel="noopener" aria-label="github">
+					<span class="vpi-social vpi-social-github">github</span>
+				</a>
+				
+			</div>
+			
+			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">☰</button>
+			
+		</div>
+	</div>
+</header>
+
+		
+
+<aside class="VPSidebar" id="VPSidebar">
+	<nav class="nav" id="VPSidebarNav">
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">导航</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/guide/index.html"><span class="text">导航介绍</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem is-collapsible ">
+	<div class="item-row">
+		
+		<span class="text">一级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级菜单首页</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级次页面</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem is-collapsible collapsed">
+	<div class="item-row">
+		
+		<span class="text">二级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" style="display: none;">
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">三级</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">历史记录</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-localstorage-persistence.html"><span class="text">折叠状态持久化</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-state-refactor.html"><span class="text">侧边栏状态重构</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-fouc-optimization.html"><span class="text">侧边栏防闪烁</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/themeable-logo.html"><span class="text">站点logo功能</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/prev-next-links.html"><span class="text">上下页链接功能</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">IceTest</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+	</nav>
+</aside>
+
+
+		
+<div class="VPContent " id="VPContent">
+	
+		
+<div class="VPDoc">
+	<div class="container">
+		<div class="content">
+			<main class="main" id="main-content">
+				<h1 id="themego-">theme.go 代码重构文档</h1>
+<h2 id="heading">变更概述</h2>
+<p>本次重构对 <code>vitepress-go/internal/theme/theme.go</code> 文件中的 <code>parsePrevNextLinks</code> 函数及其相关代码进行了全面优化，包括中文注释补充、重复代码消除和函数拆分。</p>
+<h2 id="heading-1">变更文件</h2>
+<ul>
+<li><code>vitepress-go/internal/theme/theme.go</code></li>
+</ul>
+<h2 id="heading-2">详细变更内容</h2>
+<h3 id="1-">1. 函数注释中文化</h3>
+<p><strong>原注释：</strong></p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// parsePrevNextLinks infers prev/next links from the sidebar or reads from frontmatter.
+</span></span></span></code></pre><p><strong>更新为：</strong></p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// parsePrevNextLinks 从侧边栏推断上一页/下一页链接，或者从页面前置元数据中读取
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 参数：
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	meta - 页面前置元数据
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	matchedSidebar - 当前匹配的侧边栏配置
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	currentPath - 当前页面路径
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 返回值：
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	上一页链接和下一页链接的指针，如果不存在则返回 nil
+</span></span></span></code></pre><h3 id="2--flattensidebar">2. 新增辅助函数 flattenSidebar</h3>
+<p><strong>目的：</strong> 将嵌套的侧边栏结构扁平化逻辑独立封装</p>
+<p><strong>代码：</strong></p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// flattenSidebar 将嵌套的侧边栏结构扁平化为一维数组
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 只保留带有链接的侧边栏项，递归处理所有子菜单
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">flattenSidebar</span>(items []config.SidebarItem) []config.SidebarItem {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">var</span> flat []config.SidebarItem
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">var</span> flatten <span style="color:#000;font-weight:bold">func</span>(items []config.SidebarItem)
+</span></span><span style="display:flex;"><span>	flatten = <span style="color:#000;font-weight:bold">func</span>(items []config.SidebarItem) {
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">for</span> _, item <span style="color:#000;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">range</span> items {
+</span></span><span style="display:flex;"><span>			<span style="color:#998;font-style:italic">// 只添加带有链接的侧边栏项
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>			<span style="color:#000;font-weight:bold">if</span> item.Link <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>				flat = <span style="color:#0086b3">append</span>(flat, item)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#998;font-style:italic">// 递归处理子菜单
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>			<span style="color:#000;font-weight:bold">if</span> <span style="color:#0086b3">len</span>(item.Items) &gt; <span style="color:#099">0</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#900;font-weight:bold">flatten</span>(item.Items)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#900;font-weight:bold">flatten</span>(items)
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> flat
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre><p><strong>使用方式：</strong></p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 原代码（15 行）
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">var</span> flat []config.SidebarItem
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">var</span> flatten <span style="color:#000;font-weight:bold">func</span>(items []config.SidebarItem)
+</span></span><span style="display:flex;"><span>flatten = <span style="color:#000;font-weight:bold">func</span>(items []config.SidebarItem) {
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">for</span> _, item <span style="color:#000;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">range</span> items {
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">if</span> item.Link <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>            flat = <span style="color:#0086b3">append</span>(flat, item)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#0086b3">len</span>(item.Items) &gt; <span style="color:#099">0</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#900;font-weight:bold">flatten</span>(item.Items)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">flatten</span>(matchedSidebar)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 优化后（1 行）
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>flat <span style="color:#000;font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">flattenSidebar</span>(matchedSidebar)
+</span></span></code></pre><h3 id="3--parsepagelinkfrommeta">3. 新增辅助函数 parsePageLinkFromMeta</h3>
+<p><strong>目的：</strong> 消除处理 prev 和 next 元数据时的重复代码</p>
+<p><strong>代码：</strong></p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// parsePageLinkFromMeta 从元数据中解析页面链接
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 参数：
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	meta - 页面前置元数据
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	key - 元数据键名（&#34;prev&#34;或&#34;next&#34;）
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	defaultLink - 默认链接，当元数据未配置时使用
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 返回值：
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	解析后的 PageLink 指针，如果禁用或解析失败则返回 nil 或默认值
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">parsePageLinkFromMeta</span>(meta <span style="color:#000;font-weight:bold">map</span>[<span style="color:#458;font-weight:bold">string</span>]<span style="color:#000;font-weight:bold">interface</span>{}, key <span style="color:#458;font-weight:bold">string</span>, defaultLink <span style="color:#000;font-weight:bold">*</span>PageLink) <span style="color:#000;font-weight:bold">*</span>PageLink {
+</span></span><span style="display:flex;"><span>	v, ok <span style="color:#000;font-weight:bold">:=</span> meta[key]
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> !ok {
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">return</span> defaultLink
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#998;font-style:italic">// 如果设置为 false，则禁用链接
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">if</span> b, isBool <span style="color:#000;font-weight:bold">:=</span> v.(<span style="color:#458;font-weight:bold">bool</span>); isBool <span style="color:#000;font-weight:bold">&amp;&amp;</span> !b {
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">nil</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#998;font-style:italic">// 将前置元数据转换为 PageLink 结构体
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	cleanData <span style="color:#000;font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">convertMap</span>(v)
+</span></span><span style="display:flex;"><span>	b, err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Marshal</span>(cleanData)
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">var</span> pl PageLink
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Unmarshal</span>(b, <span style="color:#000;font-weight:bold">&amp;</span>pl); err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> pl.Text <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">&amp;</span>pl
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> defaultLink
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre><p><strong>使用方式：</strong></p>
+<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 原代码（36 行重复代码）
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">if</span> meta <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">if</span> p, ok <span style="color:#000;font-weight:bold">:=</span> meta[<span style="color:#d14">&#34;prev&#34;</span>]; ok {
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">if</span> b, isBool <span style="color:#000;font-weight:bold">:=</span> p.(<span style="color:#458;font-weight:bold">bool</span>); isBool <span style="color:#000;font-weight:bold">&amp;&amp;</span> !b {
+</span></span><span style="display:flex;"><span>            prev = <span style="color:#000;font-weight:bold">nil</span>
+</span></span><span style="display:flex;"><span>        } <span style="color:#000;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            cleanData <span style="color:#000;font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">convertMap</span>(p)
+</span></span><span style="display:flex;"><span>            b, err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Marshal</span>(cleanData)
+</span></span><span style="display:flex;"><span>            <span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#000;font-weight:bold">var</span> pl PageLink
+</span></span><span style="display:flex;"><span>                <span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Unmarshal</span>(b, <span style="color:#000;font-weight:bold">&amp;</span>pl); err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> pl.Text <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>                    prev = <span style="color:#000;font-weight:bold">&amp;</span>pl
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">if</span> n, ok <span style="color:#000;font-weight:bold">:=</span> meta[<span style="color:#d14">&#34;next&#34;</span>]; ok {
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">if</span> b, isBool <span style="color:#000;font-weight:bold">:=</span> n.(<span style="color:#458;font-weight:bold">bool</span>); isBool <span style="color:#000;font-weight:bold">&amp;&amp;</span> !b {
+</span></span><span style="display:flex;"><span>            next = <span style="color:#000;font-weight:bold">nil</span>
+</span></span><span style="display:flex;"><span>        } <span style="color:#000;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>            cleanData <span style="color:#000;font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">convertMap</span>(n)
+</span></span><span style="display:flex;"><span>            b, err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Marshal</span>(cleanData)
+</span></span><span style="display:flex;"><span>            <span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#000;font-weight:bold">var</span> pl PageLink
+</span></span><span style="display:flex;"><span>                <span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Unmarshal</span>(b, <span style="color:#000;font-weight:bold">&amp;</span>pl); err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> pl.Text <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>                    next = <span style="color:#000;font-weight:bold">&amp;</span>pl
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 优化后（2 行）
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">if</span> meta <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>    prev = <span style="color:#900;font-weight:bold">parsePageLinkFromMeta</span>(meta, <span style="color:#d14">&#34;prev&#34;</span>, prev)
+</span></span><span style="display:flex;"><span>    next = <span style="color:#900;font-weight:bold">parsePageLinkFromMeta</span>(meta, <span style="color:#d14">&#34;next&#34;</span>, next)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre><h3 id="4-">4. 步骤注释中文化</h3>
+<p>所有步骤注释均从英文更新为中文：</p>
+<table>
+<thead>
+<tr>
+<th>原英文注释</th>
+<th>新中文注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>// 1. Flatten the sidebar to find the current item and its neighbors</code></td>
+<td><code>// 1. 将嵌套的侧边栏结构扁平化为一维数组，方便查找当前项及其相邻项</code></td>
+</tr>
+<tr>
+<td><code>// 2. Find current index</code></td>
+<td><code>// 2. 在扁平化后的数组中查找当前页面的索引</code></td>
+</tr>
+<tr>
+<td><code>// 3. Infer from sidebar</code></td>
+<td><code>// 3. 从侧边栏推断上一页和下一页链接</code></td>
+</tr>
+<tr>
+<td><code>// 4. Override with frontmatter</code></td>
+<td><code>// 4. 使用前置元数据中的配置覆盖侧边栏推断的链接</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="5-">5. 关键逻辑注释补充</h3>
+<p>为以下关键代码块添加了中文注释：</p>
+<ul>
+<li><code>// 只添加带有链接的侧边栏项</code></li>
+<li><code>// 递归处理子菜单</code></li>
+<li><code>// 匹配当前页面路径，考虑.html 后缀的情况</code></li>
+<li><code>// 如果设置为 false，则禁用链接</code></li>
+<li><code>// 将前置元数据转换为 PageLink 结构体</code></li>
+</ul>
+<h2 id="heading-3">重构前后对比</h2>
+<h3 id="heading-4">代码行数</h3>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>重构前</th>
+<th>重构后</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parsePrevNextLinks</code></td>
+<td>~70 行</td>
+<td>~30 行</td>
+<td>-40 行</td>
+</tr>
+<tr>
+<td>新增 <code>flattenSidebar</code></td>
+<td>-</td>
+<td>~20 行</td>
+<td>+20 行</td>
+</tr>
+<tr>
+<td>新增 <code>parsePageLinkFromMeta</code></td>
+<td>-</td>
+<td>~25 行</td>
+<td>+25 行</td>
+</tr>
+</tbody>
+</table>
+<h3 id="heading-5">代码质量提升</h3>
+<ol>
+<li>
+<p><strong>可读性提升</strong></p>
+<ul>
+<li>中文注释降低理解门槛</li>
+<li>函数职责更加清晰</li>
+<li>主函数逻辑更简洁</li>
+</ul>
+</li>
+<li>
+<p><strong>可维护性提升</strong></p>
+<ul>
+<li>消除重复代码（DRY 原则）</li>
+<li>函数可独立测试</li>
+<li>便于后续扩展</li>
+</ul>
+</li>
+<li>
+<p><strong>代码复用</strong></p>
+<ul>
+<li><code>flattenSidebar</code> 可被其他函数复用</li>
+<li><code>parsePageLinkFromMeta</code> 统一处理元数据解析</li>
+</ul>
+</li>
+</ol>
+<h2 id="heading-6">变更影响</h2>
+<ul>
+<li>✅ 代码逻辑完全保持不变</li>
+<li>✅ 仅对代码结构和注释进行优化</li>
+<li>✅ 提高中文开发者的代码阅读体验</li>
+<li>✅ 便于后续维护和扩展</li>
+<li>✅ 无外部依赖变更</li>
+<li>✅ 无 API 接口变更</li>
+</ul>
+<h2 id="heading-7">测试建议</h2>
+<p>建议对以下场景进行测试：</p>
+<ol>
+<li>侧边栏正常导航（上一页/下一页）</li>
+<li>前置元数据中配置 <code>prev: false</code> 或 <code>next: false</code></li>
+<li>前置元数据中自定义 <code>prev</code> 或 <code>next</code> 的文本和链接</li>
+<li>嵌套侧边栏菜单的扁平化</li>
+<li>页面路径带.html 后缀和不带的情况</li>
+</ol>
+<h2 id="heading-8">变更时间</h2>
+<p>2026 年 4 月 16 日</p>
+
+			</main>
+			<footer class="VPDocFooter">
+				
+			</footer>
+		</div>
+	</div>
+</div>
+
+	
+</div>
+
+		
+
+<footer class="VPFooter ">
+	<div class="container">
+		<p class="message">Released under the <a href="https://github.com/vuejs/vitepress/blob/main/LICENSE">MIT License</a>.</p>
+		<p class="copyright">Copyright © 2026 GoPress Contributors</p>
+	</div>
+</footer>
+
+
+	</div>
+	<script type="module" src="/assets/app.js"></script>
+</body>
+</html>

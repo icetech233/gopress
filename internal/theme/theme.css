@@ -144,3 +144,13 @@ html:not(.dark) .dark-only { display: none !important; }
 .VPFooter .message,.VPFooter .copyright{margin:0;line-height:24px;font-size:0.9rem;color:var(--vp-c-text-2)}
 .VPFooter .message{margin-bottom:2px;color:var(--vp-c-text-1);font-weight:600;display:inline-block;position:relative;padding-bottom:6px}
 .VPFooter .message::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--vp-c-brand);border-radius:1px;opacity:0.6}
+
+/* Prev Next Links */
+.VPDocFooter { margin-top: 64px; border-top: 1px solid var(--vp-c-divider); padding-top: 24px; }
+.VPDocFooter .prev-next { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.VPDocFooter .pager { display: flex; flex: 1; }
+.VPDocFooter .pager-link { display: flex; flex-direction: column; width: 100%; text-decoration: none; border: 1px solid var(--vp-c-border); padding: 11px 16px 13px; border-radius: 8px; transition: border-color 0.25s; box-sizing: border-box; }
+.VPDocFooter .pager-link:hover { border-color: var(--vp-c-brand); }
+.VPDocFooter .pager-link .desc { font-size: 11px; font-weight: 500; color: var(--vp-c-text-2); line-height: 1.5; margin-bottom: 2px; }
+.VPDocFooter .pager-link .title { font-size: 14px; font-weight: 500; color: var(--vp-c-brand); transition: color 0.25s; }
+.VPDocFooter .pager-link.next { text-align: right; }

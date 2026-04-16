@@ -73,6 +73,10 @@
             {
               "text": "站点logo功能",
               "link": "/history/themeable-logo.html"
+            },
+            {
+              "text": "上下页链接功能",
+              "link": "/history/prev-next-links.html"
             }
           ]
         },

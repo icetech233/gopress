@@ -1,3 +1,12 @@
+---
+prev:
+  text: '侧边栏状态重构'
+  link: '/history/sidebar-state-refactor.html'
+next:
+  text: '折叠状态持久化'
+  link: '/history/sidebar-localstorage-persistence.html'
+---
+
 # Logo功能实现
 
 ## 1. 背景

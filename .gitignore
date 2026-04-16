@@ -9,7 +9,6 @@
 *.dylib
 .idea
 
-.idea
 debug.log
 
 # Test binary, built with `go test -c`
