@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"os"
 
+	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
 	lru "github.com/hashicorp/golang-lru/v2"
+	goldmark_meta "github.com/icetech233/gopress/pkg/goldmark-meta"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
-	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
@@ -52,9 +53,12 @@ func RenderBytes(content []byte) (*RenderResult, error) {
 	md := goldmark.New(
 		goldmark.WithExtensions(
 			extension.GFM,
-			meta.Meta,
+			goldmark_meta.Meta,
 			highlighting.NewHighlighting(
-				highlighting.WithStyle("github"),
+				highlighting.WithFormatOptions(
+					chromahtml.WithClasses(true),
+				),
+				//highlighting.WithStyle("github"),
 			),
 		),
 		goldmark.WithParserOptions(
@@ -73,7 +77,7 @@ func RenderBytes(content []byte) (*RenderResult, error) {
 		return nil, fmt.Errorf("failed to convert markdown: %w", err)
 	}
 
-	metaData := meta.Get(context)
+	metaData := goldmark_meta.Get(context)
 
 	// Extract title from meta or fall back to empty
 	title := ""

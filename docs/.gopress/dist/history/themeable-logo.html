@@ -343,44 +343,44 @@
 <li><strong>对象格式</strong>：可以分别为亮色模式和暗色模式指定不同的图片，还可以配置 <code>alt</code> 文本。</li>
 </ul>
 <h3 id="-configjson">示例配置 (<code>config.json</code>)</h3>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>  <span style="color:#000080">&#34;themeConfig&#34;</span>: {
-</span></span><span style="display:flex;"><span>    <span style="color:#000080">&#34;logo&#34;</span>: {
-</span></span><span style="display:flex;"><span>      <span style="color:#000080">&#34;light&#34;</span>: <span style="color:#d14">&#34;/logo-light.png&#34;</span>,
-</span></span><span style="display:flex;"><span>      <span style="color:#000080">&#34;dark&#34;</span>: <span style="color:#d14">&#34;/logo-dark.png&#34;</span>,
-</span></span><span style="display:flex;"><span>      <span style="color:#000080">&#34;alt&#34;</span>: <span style="color:#d14">&#34;站点Logo&#34;</span>
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>}
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;themeConfig&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;logo&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;light&#34;</span><span class="p">:</span> <span class="s2">&#34;/logo-light.png&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;dark&#34;</span><span class="p">:</span> <span class="s2">&#34;/logo-dark.png&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;alt&#34;</span><span class="p">:</span> <span class="s2">&#34;站点Logo&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre><h2 id="3-">3. 技术实现细节</h2>
 <p>该功能的实现贯穿了后端配置解析、前端模板渲染以及 CSS 样式控制三个层面：</p>
 <h3 id="31--go">3.1 后端配置解析 (Go)</h3>
 <p>我们在 <code>internal/config/config.go</code> 中引入了 <code>ThemeableImage</code> 结构体：</p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">type</span> ThemeableImage <span style="color:#000;font-weight:bold">struct</span> {
-</span></span><span style="display:flex;"><span>	Light <span style="color:#458;font-weight:bold">string</span> <span style="color:#d14">`json:&#34;light,omitempty&#34; yaml:&#34;light,omitempty&#34;`</span>
-</span></span><span style="display:flex;"><span>	Dark  <span style="color:#458;font-weight:bold">string</span> <span style="color:#d14">`json:&#34;dark,omitempty&#34; yaml:&#34;dark,omitempty&#34;`</span>
-</span></span><span style="display:flex;"><span>	Alt   <span style="color:#458;font-weight:bold">string</span> <span style="color:#d14">`json:&#34;alt,omitempty&#34; yaml:&#34;alt,omitempty&#34;`</span>
-</span></span><span style="display:flex;"><span>}
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ThemeableImage</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Light</span> <span class="kt">string</span> <span class="s">`json:&#34;light,omitempty&#34; yaml:&#34;light,omitempty&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Dark</span>  <span class="kt">string</span> <span class="s">`json:&#34;dark,omitempty&#34; yaml:&#34;dark,omitempty&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Alt</span>   <span class="kt">string</span> <span class="s">`json:&#34;alt,omitempty&#34; yaml:&#34;alt,omitempty&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre><p>为了<strong>保证向下兼容性</strong>，我们为 <code>ThemeableImage</code> 实现了自定义的 <code>UnmarshalJSON</code> 和 <code>UnmarshalYAML</code> 方法。当解析器遇到原有的纯字符串格式时，它会自动将其映射到 <code>Light</code> 字段，并将 <code>Dark</code> 留空。</p>
 <h3 id="32--html">3.2 前端模板渲染 (HTML)</h3>
 <p>在 <code>internal/theme/layout.tmpl</code> 模板的导航栏部分，我们加入了更复杂的条件渲染逻辑：</p>
 <ul>
 <li>当同时存在 <code>Light</code> 和 <code>Dark</code> 时，会<strong>同时渲染两个 <code>&lt;img&gt;</code> 标签</strong>，并分别打上 <code>light-only</code> 和 <code>dark-only</code> 类名。</li>
 </ul>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span>&lt;<span style="color:#000080">div</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;title&#34;</span>&gt;
-</span></span><span style="display:flex;"><span>	&lt;<span style="color:#000080">a</span> <span style="color:#008080">href</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;{{ .SiteConfig.Base }}&#34;</span>&gt;
-</span></span><span style="display:flex;"><span>		{{ if .SiteConfig.ThemeConfig.Logo.Light }}&lt;<span style="color:#000080">img</span> <span style="color:#008080">src</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;{{ .SiteConfig.ThemeConfig.Logo.Light }}&#34;</span> <span style="color:#008080">alt</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;{{ .SiteConfig.ThemeConfig.Logo.Alt }}&#34;</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;logo light-only&#34;</span>&gt;{{ end }}
-</span></span><span style="display:flex;"><span>		{{ if .SiteConfig.ThemeConfig.Logo.Dark }}&lt;<span style="color:#000080">img</span> <span style="color:#008080">src</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;{{ .SiteConfig.ThemeConfig.Logo.Dark }}&#34;</span> <span style="color:#008080">alt</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;{{ .SiteConfig.ThemeConfig.Logo.Alt }}&#34;</span> <span style="color:#008080">class</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;logo dark-only&#34;</span>&gt;{{ end }}
-</span></span><span style="display:flex;"><span>		{{ .SiteConfig.Title }}
-</span></span><span style="display:flex;"><span>	&lt;/<span style="color:#000080">a</span>&gt;
-</span></span><span style="display:flex;"><span>&lt;/<span style="color:#000080">div</span>&gt;
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;title&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;{{ .SiteConfig.Base }}&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">		{{ if .SiteConfig.ThemeConfig.Logo.Light }}<span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;{{ .SiteConfig.ThemeConfig.Logo.Light }}&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;{{ .SiteConfig.ThemeConfig.Logo.Alt }}&#34;</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;logo light-only&#34;</span><span class="p">&gt;</span>{{ end }}
+</span></span><span class="line"><span class="cl">		{{ if .SiteConfig.ThemeConfig.Logo.Dark }}<span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;{{ .SiteConfig.ThemeConfig.Logo.Dark }}&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;{{ .SiteConfig.ThemeConfig.Logo.Alt }}&#34;</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;logo dark-only&#34;</span><span class="p">&gt;</span>{{ end }}
+</span></span><span class="line"><span class="cl">		{{ .SiteConfig.Title }}
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 </span></span></code></pre><h3 id="33--css">3.3 样式控制 (CSS)</h3>
 <p>为了避免页面在加载时判断主题时的闪烁（FOUC），并且无需编写复杂的 JavaScript 监听器，我们采用了纯 CSS 的方式控制主题图片的显隐。在 <code>internal/theme/theme.css</code> 中添加了如下规则：</p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">/* 当主题为暗色时，隐藏仅亮色可见的元素 */</span>
-</span></span><span style="display:flex;"><span><span style="color:#000080">html</span>.<span style="color:#458;font-weight:bold">dark</span> .<span style="color:#458;font-weight:bold">light-only</span> { <span style="color:#000;font-weight:bold">display</span>: <span style="color:#000;font-weight:bold">none</span> <span style="color:#999;font-weight:bold;font-style:italic">!important</span>; }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">/* 当主题不为暗色时，隐藏仅暗色可见的元素 */</span>
-</span></span><span style="display:flex;"><span><span style="color:#000080">html</span>:<span style="color:#3c5d5d;font-weight:bold">not</span><span style="color:#000;font-weight:bold">(</span>.<span style="color:#458;font-weight:bold">dark</span><span style="color:#000;font-weight:bold">)</span> .<span style="color:#458;font-weight:bold">dark-only</span> { <span style="color:#000;font-weight:bold">display</span>: <span style="color:#000;font-weight:bold">none</span> <span style="color:#999;font-weight:bold;font-style:italic">!important</span>; }
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="c">/* 当主题为暗色时，隐藏仅亮色可见的元素 */</span>
+</span></span><span class="line"><span class="cl"><span class="nt">html</span><span class="p">.</span><span class="nc">dark</span> <span class="p">.</span><span class="nc">light-only</span> <span class="p">{</span> <span class="k">display</span><span class="p">:</span> <span class="kc">none</span> <span class="cp">!important</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">/* 当主题不为暗色时，隐藏仅暗色可见的元素 */</span>
+</span></span><span class="line"><span class="cl"><span class="nt">html</span><span class="p">:</span><span class="nd">not</span><span class="o">(</span><span class="p">.</span><span class="nc">dark</span><span class="o">)</span> <span class="p">.</span><span class="nc">dark-only</span> <span class="p">{</span> <span class="k">display</span><span class="p">:</span> <span class="kc">none</span> <span class="cp">!important</span><span class="p">;</span> <span class="p">}</span>
 </span></span></code></pre><p>依托于 <code>html.dark</code> 这个类（这通常在 <code>&lt;head&gt;</code> 中极早的同步脚本中设置），我们可以做到图片渲染时的无缝切换，完全规避闪烁问题。</p>
 <h2 id="4-">4. 总结</h2>
 <p>通过数据结构升级、实现自定义的反序列化方法以及运用纯 CSS 的显隐策略，我们完美实现了对多主题 Logo 的支持。</p>

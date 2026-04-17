@@ -154,3 +154,66 @@ html:not(.dark) .dark-only { display: none !important; }
 .VPDocFooter .pager-link .desc { font-size: 11px; font-weight: 500; color: var(--vp-c-text-2); line-height: 1.5; margin-bottom: 2px; }
 .VPDocFooter .pager-link .title { font-size: 14px; font-weight: 500; color: var(--vp-c-brand); transition: color 0.25s; }
 .VPDocFooter .pager-link.next { text-align: right; }
+
+
+/* 代码组件 */
+pre.chroma {
+	padding: 16px;
+	border-radius: 8px;
+	background-color: var(--vp-c-bg-alt);
+	border: 1px solid var(--vp-c-border);
+	overflow-x: auto;
+	font-size: 14px;
+	line-height: 1.5;
+	tab-size: 4;
+}
+
+/* 代码行容器 */
+pre.chroma code {
+	display: block;
+	color: var(--vp-c-text);
+}
+
+/* 语法高亮：关键字 (function, const, let, if, return, try, catch 等) */
+pre.chroma .kd,
+pre.chroma .kr,
+pre.chroma .k {
+	color: var(--vp-c-brand-dark);
+	font-weight: 600;
+}
+
+/* 函数名 */
+pre.chroma .nx {
+	color: var(--vp-c-text);
+}
+
+/* 函数定义名（更突出）*/
+pre.chroma .nf {
+	color: var(--vp-c-brand);
+	font-weight: 600;
+}
+
+/* 字符串 */
+pre.chroma .s1,
+pre.chroma .s2 {
+	color: #8c7d92; /* 使用中性紫灰，避免太刺眼；也可用 var(--vp-c-text-2) */
+	/* 或者使用品牌色变体：color: var(--vp-c-brand-light); */
+}
+
+/* 括号、标点 */
+pre.chroma .p {
+	color: var(--vp-c-text-2);
+}
+
+/* 注释（虽然当前代码无注释，但预留）*/
+pre.chroma .c,
+pre.chroma .c1 {
+	color: var(--vp-c-text-2);
+	font-style: italic;
+}
+
+/* 数字、布尔值等字面量（如有）*/
+pre.chroma .m,
+pre.chroma .kc {
+	color: var(--vp-c-brand);
+}

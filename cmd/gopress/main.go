@@ -10,6 +10,13 @@ import (
 	"github.com/icetech233/gopress/internal/server"
 )
 
+func main() {
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
 var rootCmd = &cobra.Command{
 	Use:   "gopress",
 	Short: "gopress - a fast static site generator in Go",
@@ -81,11 +88,4 @@ func init() {
 
 	rootCmd.AddCommand(devCmd)
 	rootCmd.AddCommand(buildCmd)
-}
-
-func main() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 }

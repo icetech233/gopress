@@ -355,56 +355,56 @@
 <h2 id="3-">3. 具体实现细节</h2>
 <h3 id="31-">3.1 状态存储与读取机制的改造</h3>
 <p><strong>修改前</strong>：</p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">function</span> saveSidebarItemState(item, collapsed) {
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">const</span> key <span style="color:#000;font-weight:bold">=</span> getSidebarStateKey(item);
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> (key) localStorage.setItem(key, collapsed <span style="color:#000;font-weight:bold">?</span> <span style="color:#d14">&#39;1&#39;</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#d14">&#39;0&#39;</span>);
-</span></span><span style="display:flex;"><span>}
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">saveSidebarItemState</span><span class="p">(</span><span class="nx">item</span><span class="p">,</span> <span class="nx">collapsed</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kr">const</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">getSidebarStateKey</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="nx">localStorage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">collapsed</span> <span class="o">?</span> <span class="s1">&#39;1&#39;</span> <span class="o">:</span> <span class="s1">&#39;0&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre><p><strong>修改后</strong>：<br>
 改为集中式的 JSON 存储机制：</p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">function</span> saveSidebarItemState(item, collapsed) {
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">const</span> key <span style="color:#000;font-weight:bold">=</span> getSidebarStateKey(item);
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> (<span style="color:#000;font-weight:bold">!</span>key) <span style="color:#000;font-weight:bold">return</span>;
-</span></span><span style="display:flex;"><span>	
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">let</span> states <span style="color:#000;font-weight:bold">=</span> {};
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">try</span> {
-</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">const</span> saved <span style="color:#000;font-weight:bold">=</span> localStorage.getItem(<span style="color:#d14">&#39;gopress-sidebar-states&#39;</span>);
-</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">if</span> (saved) states <span style="color:#000;font-weight:bold">=</span> JSON.parse(saved);
-</span></span><span style="display:flex;"><span>	} <span style="color:#000;font-weight:bold">catch</span> (e) {}
-</span></span><span style="display:flex;"><span>	
-</span></span><span style="display:flex;"><span>	states[key] <span style="color:#000;font-weight:bold">=</span> collapsed;
-</span></span><span style="display:flex;"><span>	localStorage.setItem(<span style="color:#d14">&#39;gopress-sidebar-states&#39;</span>, JSON.stringify(states));
-</span></span><span style="display:flex;"><span>}
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">saveSidebarItemState</span><span class="p">(</span><span class="nx">item</span><span class="p">,</span> <span class="nx">collapsed</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kr">const</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">getSidebarStateKey</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">key</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">	<span class="kd">let</span> <span class="nx">states</span> <span class="o">=</span> <span class="p">{};</span>
+</span></span><span class="line"><span class="cl">	<span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kr">const</span> <span class="nx">saved</span> <span class="o">=</span> <span class="nx">localStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="s1">&#39;gopress-sidebar-states&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="nx">saved</span><span class="p">)</span> <span class="nx">states</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">saved</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">	<span class="nx">states</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">collapsed</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">localStorage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="s1">&#39;gopress-sidebar-states&#39;</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">states</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre><p>在 <code>restoreSidebarState</code> 方法中，改为一次性读取解析：</p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">function</span> restoreSidebarState() {
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">let</span> states <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span>;
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">try</span> {
-</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">const</span> saved <span style="color:#000;font-weight:bold">=</span> localStorage.getItem(<span style="color:#d14">&#39;gopress-sidebar-states&#39;</span>);
-</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">if</span> (saved) states <span style="color:#000;font-weight:bold">=</span> JSON.parse(saved);
-</span></span><span style="display:flex;"><span>	} <span style="color:#000;font-weight:bold">catch</span> (e) {}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> (<span style="color:#000;font-weight:bold">!</span>states) <span style="color:#000;font-weight:bold">return</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#0086b3">document</span>.querySelectorAll(<span style="color:#d14">&#39;.VPSidebarItem.is-collapsible&#39;</span>).forEach(<span style="color:#000;font-weight:bold">function</span>(item) {
-</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">const</span> key <span style="color:#000;font-weight:bold">=</span> getSidebarStateKey(item);
-</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">if</span> (<span style="color:#000;font-weight:bold">!</span>key <span style="color:#000;font-weight:bold">||</span> states[key] <span style="color:#000;font-weight:bold">===</span> <span style="color:#000;font-weight:bold">undefined</span>) <span style="color:#000;font-weight:bold">return</span>;
-</span></span><span style="display:flex;"><span>        <span style="color:#998;font-style:italic">// ... 根据 states[key] 的布尔值恢复 class 和 style ...
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	});
-</span></span><span style="display:flex;"><span>}
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">restoreSidebarState</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">let</span> <span class="nx">states</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kr">const</span> <span class="nx">saved</span> <span class="o">=</span> <span class="nx">localStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="s1">&#39;gopress-sidebar-states&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="nx">saved</span><span class="p">)</span> <span class="nx">states</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">saved</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">states</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s1">&#39;.VPSidebarItem.is-collapsible&#39;</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kr">const</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">getSidebarStateKey</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">key</span> <span class="o">||</span> <span class="nx">states</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// ... 根据 states[key] 的布尔值恢复 class 和 style ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre><h3 id="32-spa-">3.2 SPA 路由跳转后的状态同步</h3>
 <p>在 <code>navigateTo</code> 函数中，完成 DOM 替换后，显式调用状态恢复逻辑：</p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#000;font-weight:bold">async</span> <span style="color:#000;font-weight:bold">function</span> navigateTo(path, push <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span>) {
-</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// ... fetch 新页面内容 ...
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">const</span> newContent <span style="color:#000;font-weight:bold">=</span> doc.getElementById(<span style="color:#d14">&#39;Layout&#39;</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">if</span> (newContent) {
-</span></span><span style="display:flex;"><span>        <span style="color:#0086b3">document</span>.getElementById(<span style="color:#d14">&#39;Layout&#39;</span>).innerHTML <span style="color:#000;font-weight:bold">=</span> newContent.innerHTML;
-</span></span><span style="display:flex;"><span>        <span style="color:#998;font-style:italic">// ... 更新 title 和 history ...
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#998;font-style:italic">// 【新增】页面切换后立即恢复侧边栏状态，避免闪烁
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>        restoreSidebarState();
-</span></span><span style="display:flex;"><span>    } <span style="color:#000;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>        <span style="color:#0086b3">window</span>.location.href <span style="color:#000;font-weight:bold">=</span> path; <span style="color:#998;font-style:italic">// Fallback
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    }
-</span></span><span style="display:flex;"><span>}
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="kr">async</span> <span class="kd">function</span> <span class="nx">navigateTo</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">push</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ... fetch 新页面内容 ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kr">const</span> <span class="nx">newContent</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;Layout&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">newContent</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;Layout&#39;</span><span class="p">).</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">newContent</span><span class="p">.</span><span class="nx">innerHTML</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// ... 更新 title 和 history ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        
+</span></span><span class="line"><span class="cl">        <span class="c1">// 【新增】页面切换后立即恢复侧边栏状态，避免闪烁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">restoreSidebarState</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">path</span><span class="p">;</span> <span class="c1">// Fallback
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre><h2 id="4-">4. 总结与收益</h2>
 <p>通过此次重构：</p>
 <ol>

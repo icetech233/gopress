@@ -37,6 +37,7 @@ func NewLiveReload() (*LiveReload, error) {
 // Watch recursively watches a directory for changes and broadcasts reload events.
 func (lr *LiveReload) Watch(root string) {
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		// TODO 排查 .idea
 		if info != nil && info.IsDir() {
 			return lr.watcher.Add(path)
 		}

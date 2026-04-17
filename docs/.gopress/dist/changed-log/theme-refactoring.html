@@ -343,133 +343,133 @@
 <h2 id="heading-2">详细变更内容</h2>
 <h3 id="1-">1. 函数注释中文化</h3>
 <p><strong>原注释：</strong></p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// parsePrevNextLinks infers prev/next links from the sidebar or reads from frontmatter.
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="c1">// parsePrevNextLinks infers prev/next links from the sidebar or reads from frontmatter.
 </span></span></span></code></pre><p><strong>更新为：</strong></p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// parsePrevNextLinks 从侧边栏推断上一页/下一页链接，或者从页面前置元数据中读取
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 参数：
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	meta - 页面前置元数据
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	matchedSidebar - 当前匹配的侧边栏配置
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	currentPath - 当前页面路径
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 返回值：
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	上一页链接和下一页链接的指针，如果不存在则返回 nil
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="c1">// parsePrevNextLinks 从侧边栏推断上一页/下一页链接，或者从页面前置元数据中读取
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 参数：
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	meta - 页面前置元数据
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	matchedSidebar - 当前匹配的侧边栏配置
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	currentPath - 当前页面路径
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 返回值：
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	上一页链接和下一页链接的指针，如果不存在则返回 nil
 </span></span></span></code></pre><h3 id="2--flattensidebar">2. 新增辅助函数 flattenSidebar</h3>
 <p><strong>目的：</strong> 将嵌套的侧边栏结构扁平化逻辑独立封装</p>
 <p><strong>代码：</strong></p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// flattenSidebar 将嵌套的侧边栏结构扁平化为一维数组
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 只保留带有链接的侧边栏项，递归处理所有子菜单
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">flattenSidebar</span>(items []config.SidebarItem) []config.SidebarItem {
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">var</span> flat []config.SidebarItem
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">var</span> flatten <span style="color:#000;font-weight:bold">func</span>(items []config.SidebarItem)
-</span></span><span style="display:flex;"><span>	flatten = <span style="color:#000;font-weight:bold">func</span>(items []config.SidebarItem) {
-</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">for</span> _, item <span style="color:#000;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">range</span> items {
-</span></span><span style="display:flex;"><span>			<span style="color:#998;font-style:italic">// 只添加带有链接的侧边栏项
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>			<span style="color:#000;font-weight:bold">if</span> item.Link <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;&#34;</span> {
-</span></span><span style="display:flex;"><span>				flat = <span style="color:#0086b3">append</span>(flat, item)
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>			<span style="color:#998;font-style:italic">// 递归处理子菜单
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>			<span style="color:#000;font-weight:bold">if</span> <span style="color:#0086b3">len</span>(item.Items) &gt; <span style="color:#099">0</span> {
-</span></span><span style="display:flex;"><span>				<span style="color:#900;font-weight:bold">flatten</span>(item.Items)
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#900;font-weight:bold">flatten</span>(items)
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> flat
-</span></span><span style="display:flex;"><span>}
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="c1">// flattenSidebar 将嵌套的侧边栏结构扁平化为一维数组
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 只保留带有链接的侧边栏项，递归处理所有子菜单
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">flattenSidebar</span><span class="p">(</span><span class="nx">items</span> <span class="p">[]</span><span class="nx">config</span><span class="p">.</span><span class="nx">SidebarItem</span><span class="p">)</span> <span class="p">[]</span><span class="nx">config</span><span class="p">.</span><span class="nx">SidebarItem</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">flat</span> <span class="p">[]</span><span class="nx">config</span><span class="p">.</span><span class="nx">SidebarItem</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">flatten</span> <span class="kd">func</span><span class="p">(</span><span class="nx">items</span> <span class="p">[]</span><span class="nx">config</span><span class="p">.</span><span class="nx">SidebarItem</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">flatten</span> <span class="p">=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">items</span> <span class="p">[]</span><span class="nx">config</span><span class="p">.</span><span class="nx">SidebarItem</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">item</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">items</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 只添加带有链接的侧边栏项
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">if</span> <span class="nx">item</span><span class="p">.</span><span class="nx">Link</span> <span class="o">!=</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">flat</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">flat</span><span class="p">,</span> <span class="nx">item</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 递归处理子菜单
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">Items</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nf">flatten</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">Items</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">flatten</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">flat</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre><p><strong>使用方式：</strong></p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 原代码（15 行）
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">var</span> flat []config.SidebarItem
-</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">var</span> flatten <span style="color:#000;font-weight:bold">func</span>(items []config.SidebarItem)
-</span></span><span style="display:flex;"><span>flatten = <span style="color:#000;font-weight:bold">func</span>(items []config.SidebarItem) {
-</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">for</span> _, item <span style="color:#000;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">range</span> items {
-</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">if</span> item.Link <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;&#34;</span> {
-</span></span><span style="display:flex;"><span>            flat = <span style="color:#0086b3">append</span>(flat, item)
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#0086b3">len</span>(item.Items) &gt; <span style="color:#099">0</span> {
-</span></span><span style="display:flex;"><span>            <span style="color:#900;font-weight:bold">flatten</span>(item.Items)
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span><span style="color:#900;font-weight:bold">flatten</span>(matchedSidebar)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 优化后（1 行）
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>flat <span style="color:#000;font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">flattenSidebar</span>(matchedSidebar)
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="c1">// 原代码（15 行）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">flat</span> <span class="p">[]</span><span class="nx">config</span><span class="p">.</span><span class="nx">SidebarItem</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">flatten</span> <span class="kd">func</span><span class="p">(</span><span class="nx">items</span> <span class="p">[]</span><span class="nx">config</span><span class="p">.</span><span class="nx">SidebarItem</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">flatten</span> <span class="p">=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">items</span> <span class="p">[]</span><span class="nx">config</span><span class="p">.</span><span class="nx">SidebarItem</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">item</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">items</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">item</span><span class="p">.</span><span class="nx">Link</span> <span class="o">!=</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">flat</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">flat</span><span class="p">,</span> <span class="nx">item</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">Items</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nf">flatten</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">Items</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nf">flatten</span><span class="p">(</span><span class="nx">matchedSidebar</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 优化后（1 行）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">flat</span> <span class="o">:=</span> <span class="nf">flattenSidebar</span><span class="p">(</span><span class="nx">matchedSidebar</span><span class="p">)</span>
 </span></span></code></pre><h3 id="3--parsepagelinkfrommeta">3. 新增辅助函数 parsePageLinkFromMeta</h3>
 <p><strong>目的：</strong> 消除处理 prev 和 next 元数据时的重复代码</p>
 <p><strong>代码：</strong></p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// parsePageLinkFromMeta 从元数据中解析页面链接
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 参数：
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	meta - 页面前置元数据
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	key - 元数据键名（&#34;prev&#34;或&#34;next&#34;）
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	defaultLink - 默认链接，当元数据未配置时使用
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 返回值：
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//	解析后的 PageLink 指针，如果禁用或解析失败则返回 nil 或默认值
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">parsePageLinkFromMeta</span>(meta <span style="color:#000;font-weight:bold">map</span>[<span style="color:#458;font-weight:bold">string</span>]<span style="color:#000;font-weight:bold">interface</span>{}, key <span style="color:#458;font-weight:bold">string</span>, defaultLink <span style="color:#000;font-weight:bold">*</span>PageLink) <span style="color:#000;font-weight:bold">*</span>PageLink {
-</span></span><span style="display:flex;"><span>	v, ok <span style="color:#000;font-weight:bold">:=</span> meta[key]
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> !ok {
-</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">return</span> defaultLink
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#998;font-style:italic">// 如果设置为 false，则禁用链接
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">if</span> b, isBool <span style="color:#000;font-weight:bold">:=</span> v.(<span style="color:#458;font-weight:bold">bool</span>); isBool <span style="color:#000;font-weight:bold">&amp;&amp;</span> !b {
-</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">nil</span>
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#998;font-style:italic">// 将前置元数据转换为 PageLink 结构体
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	cleanData <span style="color:#000;font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">convertMap</span>(v)
-</span></span><span style="display:flex;"><span>	b, err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Marshal</span>(cleanData)
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">var</span> pl PageLink
-</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Unmarshal</span>(b, <span style="color:#000;font-weight:bold">&amp;</span>pl); err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> pl.Text <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;&#34;</span> {
-</span></span><span style="display:flex;"><span>			<span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">&amp;</span>pl
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> defaultLink
-</span></span><span style="display:flex;"><span>}
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="c1">// parsePageLinkFromMeta 从元数据中解析页面链接
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 参数：
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	meta - 页面前置元数据
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	key - 元数据键名（&#34;prev&#34;或&#34;next&#34;）
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	defaultLink - 默认链接，当元数据未配置时使用
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 返回值：
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">//	解析后的 PageLink 指针，如果禁用或解析失败则返回 nil 或默认值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">parsePageLinkFromMeta</span><span class="p">(</span><span class="nx">meta</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{},</span> <span class="nx">key</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">defaultLink</span> <span class="o">*</span><span class="nx">PageLink</span><span class="p">)</span> <span class="o">*</span><span class="nx">PageLink</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">v</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">meta</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">defaultLink</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 如果设置为 false，则禁用链接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">isBool</span> <span class="o">:=</span> <span class="nx">v</span><span class="p">.(</span><span class="kt">bool</span><span class="p">);</span> <span class="nx">isBool</span> <span class="o">&amp;&amp;</span> <span class="p">!</span><span class="nx">b</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 将前置元数据转换为 PageLink 结构体
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">cleanData</span> <span class="o">:=</span> <span class="nf">convertMap</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">b</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">cleanData</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kd">var</span> <span class="nx">pl</span> <span class="nx">PageLink</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">pl</span><span class="p">);</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">pl</span><span class="p">.</span><span class="nx">Text</span> <span class="o">!=</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="o">&amp;</span><span class="nx">pl</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">defaultLink</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre><p><strong>使用方式：</strong></p>
-<pre tabindex="0" style="background-color:#fff;"><code><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 原代码（36 行重复代码）
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">if</span> meta <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">if</span> p, ok <span style="color:#000;font-weight:bold">:=</span> meta[<span style="color:#d14">&#34;prev&#34;</span>]; ok {
-</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">if</span> b, isBool <span style="color:#000;font-weight:bold">:=</span> p.(<span style="color:#458;font-weight:bold">bool</span>); isBool <span style="color:#000;font-weight:bold">&amp;&amp;</span> !b {
-</span></span><span style="display:flex;"><span>            prev = <span style="color:#000;font-weight:bold">nil</span>
-</span></span><span style="display:flex;"><span>        } <span style="color:#000;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>            cleanData <span style="color:#000;font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">convertMap</span>(p)
-</span></span><span style="display:flex;"><span>            b, err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Marshal</span>(cleanData)
-</span></span><span style="display:flex;"><span>            <span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>                <span style="color:#000;font-weight:bold">var</span> pl PageLink
-</span></span><span style="display:flex;"><span>                <span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Unmarshal</span>(b, <span style="color:#000;font-weight:bold">&amp;</span>pl); err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> pl.Text <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;&#34;</span> {
-</span></span><span style="display:flex;"><span>                    prev = <span style="color:#000;font-weight:bold">&amp;</span>pl
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">if</span> n, ok <span style="color:#000;font-weight:bold">:=</span> meta[<span style="color:#d14">&#34;next&#34;</span>]; ok {
-</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">if</span> b, isBool <span style="color:#000;font-weight:bold">:=</span> n.(<span style="color:#458;font-weight:bold">bool</span>); isBool <span style="color:#000;font-weight:bold">&amp;&amp;</span> !b {
-</span></span><span style="display:flex;"><span>            next = <span style="color:#000;font-weight:bold">nil</span>
-</span></span><span style="display:flex;"><span>        } <span style="color:#000;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>            cleanData <span style="color:#000;font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">convertMap</span>(n)
-</span></span><span style="display:flex;"><span>            b, err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Marshal</span>(cleanData)
-</span></span><span style="display:flex;"><span>            <span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>                <span style="color:#000;font-weight:bold">var</span> pl PageLink
-</span></span><span style="display:flex;"><span>                <span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">:=</span> json.<span style="color:#900;font-weight:bold">Unmarshal</span>(b, <span style="color:#000;font-weight:bold">&amp;</span>pl); err <span style="color:#000;font-weight:bold">==</span> <span style="color:#000;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> pl.Text <span style="color:#000;font-weight:bold">!=</span> <span style="color:#d14">&#34;&#34;</span> {
-</span></span><span style="display:flex;"><span>                    next = <span style="color:#000;font-weight:bold">&amp;</span>pl
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">// 优化后（2 行）
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">if</span> meta <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>    prev = <span style="color:#900;font-weight:bold">parsePageLinkFromMeta</span>(meta, <span style="color:#d14">&#34;prev&#34;</span>, prev)
-</span></span><span style="display:flex;"><span>    next = <span style="color:#900;font-weight:bold">parsePageLinkFromMeta</span>(meta, <span style="color:#d14">&#34;next&#34;</span>, next)
-</span></span><span style="display:flex;"><span>}
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="c1">// 原代码（36 行重复代码）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="nx">meta</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">p</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">meta</span><span class="p">[</span><span class="s">&#34;prev&#34;</span><span class="p">];</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">isBool</span> <span class="o">:=</span> <span class="nx">p</span><span class="p">.(</span><span class="kt">bool</span><span class="p">);</span> <span class="nx">isBool</span> <span class="o">&amp;&amp;</span> <span class="p">!</span><span class="nx">b</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">prev</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">cleanData</span> <span class="o">:=</span> <span class="nf">convertMap</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">b</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">cleanData</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">var</span> <span class="nx">pl</span> <span class="nx">PageLink</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">pl</span><span class="p">);</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">pl</span><span class="p">.</span><span class="nx">Text</span> <span class="o">!=</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">prev</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">pl</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">meta</span><span class="p">[</span><span class="s">&#34;next&#34;</span><span class="p">];</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">isBool</span> <span class="o">:=</span> <span class="nx">n</span><span class="p">.(</span><span class="kt">bool</span><span class="p">);</span> <span class="nx">isBool</span> <span class="o">&amp;&amp;</span> <span class="p">!</span><span class="nx">b</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">next</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">cleanData</span> <span class="o">:=</span> <span class="nf">convertMap</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">b</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">cleanData</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">var</span> <span class="nx">pl</span> <span class="nx">PageLink</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">pl</span><span class="p">);</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">pl</span><span class="p">.</span><span class="nx">Text</span> <span class="o">!=</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">next</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">pl</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 优化后（2 行）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="nx">meta</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">prev</span> <span class="p">=</span> <span class="nf">parsePageLinkFromMeta</span><span class="p">(</span><span class="nx">meta</span><span class="p">,</span> <span class="s">&#34;prev&#34;</span><span class="p">,</span> <span class="nx">prev</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">next</span> <span class="p">=</span> <span class="nf">parsePageLinkFromMeta</span><span class="p">(</span><span class="nx">meta</span><span class="p">,</span> <span class="s">&#34;next&#34;</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre><h3 id="4-">4. 步骤注释中文化</h3>
 <p>所有步骤注释均从英文更新为中文：</p>
 <table>

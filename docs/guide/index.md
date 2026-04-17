@@ -7,7 +7,7 @@ title: Guide
 
 Below is a simple "Hello, World!" example in Go — a great starting point for beginners:
 
-```
+```go
 package main
 
 import "fmt"
