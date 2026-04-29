@@ -9,7 +9,7 @@ title: 测试修改
 
 以下是一个标准的 Go “Hello, World!” 程序，展示了基本语法结构：
 
-```
+```go
 package main
 
 import "fmt"

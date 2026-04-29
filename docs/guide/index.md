@@ -27,14 +27,14 @@ func main() {
 ### 1. Setting Up Your Environment
 Make sure you have [Go installed](https://golang.org/dl/) (version 1.20 or higher recommended). Verify your installation with:
 
-```
+```bash
 go version
 ```
 
 ### 2. Creating a New Project
 Initialize a new module for your GoPress project:
 
-```
+```bash
 mkdir my-gopress-site
 cd my-gopress-site
 go mod init my-gopress-site
@@ -43,7 +43,7 @@ go mod init my-gopress-site
 ### 3. Running Your Code
 Save the example above in a file named `main.go`, then run it:
 
-```
+```bash
 go run main.go
 ```
 

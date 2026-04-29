@@ -1,0 +1,617 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Quickstart: Publish an MCP Server to the MCP Registry | My GoPress WebSite</title>
+	<meta name="description" content="A gopress website">
+	<link rel="stylesheet" href="/assets/theme.css">
+	<script>
+		const savedTheme = localStorage.getItem('gopress-theme-appearance');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+			document.documentElement.classList.add('dark');
+		}
+
+		// 提前恢复侧边栏折叠状态，在DOM解析期间立即应用，彻底避免页面渲染闪烁
+		(function() {
+			try {
+				const saved = localStorage.getItem('gopress-sidebar-states');
+				if (!saved) return;
+				const states = JSON.parse(saved);
+				
+				const observer = new MutationObserver((mutations) => {
+					for (const mutation of mutations) {
+						for (const node of mutation.addedNodes) {
+							if (node.nodeType !== 1) continue;
+							
+							const items = node.classList && node.classList.contains('VPSidebarItem') 
+								? [node] 
+								: node.querySelectorAll ? Array.from(node.querySelectorAll('.VPSidebarItem.is-collapsible')) : [];
+							
+							for (const item of items) {
+								if (!item.classList || !item.classList.contains('is-collapsible')) continue;
+								const textEl = item.querySelector('.item-row > .text');
+								const key = textEl ? textEl.textContent.trim() : '';
+								
+								if (key && states[key] !== undefined) {
+									let group = null;
+									for (let i = 0; i < item.children.length; i++) {
+										if (item.children[i].classList.contains('VPSidebarGroup')) {
+											group = item.children[i];
+											break;
+										}
+									}
+									if (states[key]) {
+										item.classList.add('collapsed');
+										if (group) group.style.display = 'none';
+									} else {
+										item.classList.remove('collapsed');
+										if (group) group.style.display = '';
+									}
+								}
+							}
+						}
+					}
+				});
+				observer.observe(document.documentElement, { childList: true, subtree: true });
+				document.addEventListener('DOMContentLoaded', () => observer.disconnect());
+			} catch (e) {}
+		})();
+	</script>
+</head>
+<body>
+	<div class="Layout" id="Layout">
+		
+<header class="VPNav">
+	<div class="VPNavBar">
+		<div class="title">
+			<a href="/">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo light-only">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo dark-only">
+				My GoPress WebSite
+			</a>
+		</div>
+		<div class="content">
+			<nav class="VPNavBarMenu">
+				
+				<a class="VPLink" href="/index.html">Home</a>
+				
+				<a class="VPLink" href="/guide/index.html">Guide</a>
+				
+				<a class="VPLink" href="/icetest/index.html">IceTest</a>
+				
+			</nav>
+			<div class="VPNavBarAppearance">
+				<button class="VPSwitchAppearance" type="button" aria-label="Toggle dark mode" onclick="toggleDarkMode()">
+					<span class="vpi-sun sun">☀️</span>
+					<span class="vpi-moon moon">🌙</span>
+				</button>
+			</div>
+			<div class="VPNavBarSocialLinks">
+				
+				<a class="VPSocialLink" href="https://github.com/icetech233/gopress" target="_blank" rel="noopener" aria-label="github">
+					<span class="vpi-social vpi-social-github">github</span>
+				</a>
+				
+			</div>
+			
+			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">☰</button>
+			
+		</div>
+	</div>
+</header>
+
+		
+
+<aside class="VPSidebar" id="VPSidebar">
+	<nav class="nav" id="VPSidebarNav">
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">导航</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/guide/index.html"><span class="text">导航介绍</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem is-collapsible ">
+	<div class="item-row">
+		
+		<span class="text">一级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级菜单首页</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级次页面</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem is-collapsible collapsed">
+	<div class="item-row">
+		
+		<span class="text">二级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" style="display: none;">
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">三级</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">历史记录</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-localstorage-persistence.html"><span class="text">折叠状态持久化</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-state-refactor.html"><span class="text">侧边栏状态重构</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-fouc-optimization.html"><span class="text">侧边栏防闪烁</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/themeable-logo.html"><span class="text">站点logo功能</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/prev-next-links.html"><span class="text">上下页链接功能</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">MCP内容</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/mcp/registry-quickstart.html"><span class="text">快速开始</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">IceTest</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+	</nav>
+</aside>
+
+
+		
+<div class="VPContent " id="VPContent">
+	
+		
+<div class="VPDoc">
+	<div class="container">
+		<div class="content">
+			<main class="main" id="main-content">
+				<Note>
+  The MCP Registry is currently in preview. Breaking changes or data resets may occur before general availability. If you encounter any issues, please report them on [GitHub](https://github.com/modelcontextprotocol/registry/issues).
+</Note>
+<p>This tutorial will show you how to publish an MCP server written in TypeScript to the MCP Registry using the official <code>mcp-publisher</code> CLI tool.</p>
+<Note>
+  If you are publishing a non-npm package (PyPI, NuGet, OCI, MCPB), the overall flow is identical, but the ownership-verification step in [Step 1](#step-1-add-verification-information-to-the-package) is different per package type. See [Package Types](./package-types) for the verification mechanism that applies to your package, then return here and follow the remaining steps.
+</Note>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><strong>Node.js</strong> — This tutorial assumes the MCP server is written in TypeScript.</li>
+<li><strong>npm account</strong> — The MCP Registry only hosts metadata, not artifacts. Before publishing to the MCP Registry, we will publish the MCP server's package to npm, so you will need an <a href="https://www.npmjs.com">npm</a> account.</li>
+<li><strong>GitHub account</strong> — The MCP Registry supports <a href="./authentication">multiple authentication methods</a>. For simplicity, this tutorial will use GitHub-based authentication, so you will need a <a href="https://github.com/">GitHub</a> account.</li>
+</ul>
+<p>If you do not have an MCP server written in TypeScript, you can copy the <code>weather-server-typescript</code> server from the <a href="https://github.com/modelcontextprotocol/quickstart-resources"><code>modelcontextprotocol/quickstart-resources</code> repository</a> to follow along with this tutorial:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">git clone --depth <span class="m">1</span> git@github.com:modelcontextprotocol/quickstart-resources.git
+</span></span><span class="line"><span class="cl">cp -r quickstart-resources/weather-server-typescript .
+</span></span><span class="line"><span class="cl">rm -rf quickstart-resources
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> weather-server-typescript
+</span></span></code></pre><p>And edit <code>package.json</code> to reflect your information:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"> {
+</span></span><span class="line"><span class="cl"><span class="gd">-  &#34;name&#34;: &#34;mcp-quickstart-ts&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gd">-  &#34;version&#34;: &#34;1.0.0&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+  &#34;name&#34;: &#34;@my-username/mcp-weather-server&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+  &#34;version&#34;: &#34;1.0.1&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>   &#34;main&#34;: &#34;index.js&#34;,
+</span></span></code></pre><pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">   &#34;license&#34;: &#34;ISC&#34;,
+</span></span><span class="line"><span class="cl"><span class="gd">-  &#34;description&#34;: &#34;&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+  &#34;repository&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="gi">+    &#34;type&#34;: &#34;git&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gi">+    &#34;url&#34;: &#34;https://github.com/my-username/mcp-weather-server.git&#34;
+</span></span></span><span class="line"><span class="cl"><span class="gi">+  },
+</span></span></span><span class="line"><span class="cl"><span class="gi">+  &#34;description&#34;: &#34;An MCP server for weather information.&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>   &#34;devDependencies&#34;: {
+</span></span></code></pre><h2 id="step-1-add-verification-information-to-the-package">Step 1: Add verification information to the package</h2>
+<p>The MCP Registry verifies that a server's underlying package matches its metadata. For npm packages, this requires adding an <code>mcpName</code> property to <code>package.json</code>:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"> {
+</span></span><span class="line"><span class="cl">   &#34;name&#34;: &#34;@my-username/mcp-weather-server&#34;,
+</span></span><span class="line"><span class="cl">   &#34;version&#34;: &#34;1.0.1&#34;,
+</span></span><span class="line"><span class="cl"><span class="gi">+  &#34;mcpName&#34;: &#34;io.github.my-username/weather&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>   &#34;main&#34;: &#34;index.js&#34;,
+</span></span></code></pre><p>The value of <code>mcpName</code> will be your server's name in the MCP Registry.</p>
+<p>Because we will be using GitHub-based authentication, <code>mcpName</code> <strong>must</strong> start with <code>io.github.my-username/</code>.</p>
+<h2 id="step-2-publish-the-package">Step 2: Publish the package</h2>
+<p>The MCP Registry only hosts metadata, not artifacts, so we must publish the package to npm before publishing the server to the MCP Registry.</p>
+<p>Ensure the distribution files are built:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="c1"># Navigate to project directory</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> weather-server-typescript
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Install dependencies</span>
+</span></span><span class="line"><span class="cl">npm install
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Build the distribution files</span>
+</span></span><span class="line"><span class="cl">npm run build
+</span></span></code></pre><p>Then follow npm's <a href="https://docs.npmjs.com/creating-and-publishing-scoped-public-packages">publishing guide</a>. In particular, you will probably need to run the following commands:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="c1"># If necessary, authenticate to npm</span>
+</span></span><span class="line"><span class="cl">npm adduser
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Publish the package</span>
+</span></span><span class="line"><span class="cl">npm publish --access public
+</span></span></code></pre><p>You can verify your package is published by visiting its npm URL, such as <a href="https://www.npmjs.com/package/@my-username/mcp-weather-server">https://www.npmjs.com/package/@my-username/mcp-weather-server</a>.</p>
+<h2 id="step-3-install-mcp-publisher">Step 3: Install <code>mcp-publisher</code></h2>
+<p>Install the <code>mcp-publisher</code> CLI tool using a pre-built binary or <a href="https://brew.sh">Homebrew</a>:</p>
+<CodeGroup>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">curl -L <span class="s2">&#34;https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_</span><span class="k">$(</span>uname -s <span class="p">|</span> tr <span class="s1">&#39;[:upper:]&#39;</span> <span class="s1">&#39;[:lower:]&#39;</span><span class="k">)</span><span class="s2">_</span><span class="k">$(</span>uname -m <span class="p">|</span> sed <span class="s1">&#39;s/x86_64/amd64/;s/aarch64/arm64/&#39;</span><span class="k">)</span><span class="s2">.tar.gz&#34;</span> <span class="p">|</span> tar xz mcp-publisher <span class="o">&amp;&amp;</span> sudo mv mcp-publisher /usr/local/bin/
+</span></span></code></pre><pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="nv">$arch</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="no">[System.Runtime.InteropServices.RuntimeInformation]</span><span class="p">::</span><span class="n">ProcessArchitecture</span> <span class="o">-eq</span> <span class="s2">&#34;Arm64&#34;</span><span class="p">)</span> <span class="p">{</span> <span class="s2">&#34;arm64&#34;</span> <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="s2">&#34;amd64&#34;</span> <span class="p">};</span> <span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&#34;https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_windows_$arch.tar.gz&#34;</span> <span class="n">-OutFile</span> <span class="s2">&#34;mcp-publisher.tar.gz&#34;</span><span class="p">;</span> <span class="n">tar</span> <span class="n">xf</span> <span class="nb">mcp-publisher</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span> <span class="nb">mcp-publisher</span><span class="p">.</span><span class="n">exe</span><span class="p">;</span> <span class="nb">rm mcp-publisher</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+</span></span><span class="line"><span class="cl"><span class="c"># Move mcp-publisher.exe to a directory in your PATH</span>
+</span></span></code></pre><pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">brew install mcp-publisher
+</span></span></code></pre></CodeGroup>
+<p>Verify that <code>mcp-publisher</code> is correctly installed by running:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">mcp-publisher --help
+</span></span></code></pre><p>You should see output like:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">MCP Registry Publisher Tool
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Usage:
+</span></span><span class="line"><span class="cl">  mcp-publisher &lt;command&gt; [arguments]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Commands:
+</span></span><span class="line"><span class="cl">  init          Create a server.json file template
+</span></span><span class="line"><span class="cl">  login         Authenticate with the registry
+</span></span><span class="line"><span class="cl">  logout        Clear saved authentication
+</span></span><span class="line"><span class="cl">  publish       Publish server.json to the registry
+</span></span></code></pre><h2 id="step-4-create-serverjson">Step 4: Create <code>server.json</code></h2>
+<p>The <code>mcp-publisher init</code> command can generate a <code>server.json</code> template file with some information derived from your project.</p>
+<p>In your server project directory, run <code>mcp-publisher init</code>:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">mcp-publisher init
+</span></span></code></pre><p>Open the generated <code>server.json</code> file, and you should see contents like:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;$schema&#34;</span><span class="p">:</span> <span class="s2">&#34;https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;io.github.my-username/weather&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;An MCP server for weather information.&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;repository&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://github.com/my-username/mcp-weather-server&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;source&#34;</span><span class="p">:</span> <span class="s2">&#34;github&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;1.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;packages&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;registryType&#34;</span><span class="p">:</span> <span class="s2">&#34;npm&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;identifier&#34;</span><span class="p">:</span> <span class="s2">&#34;@my-username/mcp-weather-server&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;1.0.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;transport&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;stdio&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;environmentVariables&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;description&#34;</span><span class="p">:</span> <span class="s2">&#34;Your API key for the service&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;isRequired&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;format&#34;</span><span class="p">:</span> <span class="s2">&#34;string&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;isSecret&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;YOUR_API_KEY&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre><p>Edit the contents as necessary:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"> {
+</span></span><span class="line"><span class="cl">   &#34;$schema&#34;: &#34;https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json&#34;,
+</span></span><span class="line"><span class="cl">   &#34;name&#34;: &#34;io.github.my-username/weather&#34;,
+</span></span><span class="line"><span class="cl">   &#34;description&#34;: &#34;An MCP server for weather information.&#34;,
+</span></span><span class="line"><span class="cl">   &#34;repository&#34;: {
+</span></span><span class="line"><span class="cl">     &#34;url&#34;: &#34;https://github.com/my-username/mcp-weather-server&#34;,
+</span></span><span class="line"><span class="cl">     &#34;source&#34;: &#34;github&#34;
+</span></span><span class="line"><span class="cl">   },
+</span></span><span class="line"><span class="cl"><span class="gd">-  &#34;version&#34;: &#34;1.0.0&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+  &#34;version&#34;: &#34;1.0.1&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>   &#34;packages&#34;: [
+</span></span><span class="line"><span class="cl">     {
+</span></span><span class="line"><span class="cl">       &#34;registryType&#34;: &#34;npm&#34;,
+</span></span><span class="line"><span class="cl">       &#34;identifier&#34;: &#34;@my-username/mcp-weather-server&#34;,
+</span></span><span class="line"><span class="cl"><span class="gd">-      &#34;version&#34;: &#34;1.0.0&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+      &#34;version&#34;: &#34;1.0.1&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>       &#34;transport&#34;: {
+</span></span><span class="line"><span class="cl">         &#34;type&#34;: &#34;stdio&#34;
+</span></span><span class="line"><span class="cl"><span class="gd">-      },
+</span></span></span><span class="line"><span class="cl"><span class="gd">-      &#34;environmentVariables&#34;: [
+</span></span></span><span class="line"><span class="cl"><span class="gd">-        {
+</span></span></span><span class="line"><span class="cl"><span class="gd">-          &#34;description&#34;: &#34;Your API key for the service&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gd">-          &#34;isRequired&#34;: true,
+</span></span></span><span class="line"><span class="cl"><span class="gd">-          &#34;format&#34;: &#34;string&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="gd">-          &#34;isSecret&#34;: true,
+</span></span></span><span class="line"><span class="cl"><span class="gd">-          &#34;name&#34;: &#34;YOUR_API_KEY&#34;
+</span></span></span><span class="line"><span class="cl"><span class="gd">-        }
+</span></span></span><span class="line"><span class="cl"><span class="gd">-      ]
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+      }
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>     }
+</span></span><span class="line"><span class="cl">   ]
+</span></span><span class="line"><span class="cl"> }
+</span></span></code></pre><p>The <code>name</code> property in <code>server.json</code> <strong>must</strong> match the <code>mcpName</code> property in <code>package.json</code>.</p>
+<h2 id="step-5-authenticate-with-the-mcp-registry">Step 5: Authenticate with the MCP Registry</h2>
+<p>For this tutorial, we will authenticate with the MCP Registry using GitHub-based authentication.</p>
+<p>Run the <code>mcp-publisher login</code> command to initiate authentication:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">mcp-publisher login github
+</span></span></code></pre><p>You should see output like:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">Logging in with github...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">To authenticate, please:
+</span></span><span class="line"><span class="cl">1. Go to: https://github.com/login/device
+</span></span><span class="line"><span class="cl">2. Enter code: ABCD-1234
+</span></span><span class="line"><span class="cl">3. Authorize this application
+</span></span><span class="line"><span class="cl">Waiting for authorization...
+</span></span></code></pre><p>Visit the link, follow the prompts, and enter the authorization code that was printed in the terminal (e.g., <code>ABCD-1234</code> in the above output). Once complete, go back to the terminal, and you should see output like:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">Successfully authenticated!
+</span></span><span class="line"><span class="cl">✓ Successfully logged in
+</span></span></code></pre><h2 id="step-6-publish-to-the-mcp-registry">Step 6: Publish to the MCP Registry</h2>
+<p>Finally, publish your server to the MCP Registry using the <code>mcp-publisher publish</code> command:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">mcp-publisher publish
+</span></span></code></pre><p>You should see output like:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">Publishing to https://registry.modelcontextprotocol.io...
+</span></span><span class="line"><span class="cl">✓ Successfully published
+</span></span><span class="line"><span class="cl">✓ Server io.github.my-username/weather version 1.0.1
+</span></span></code></pre><p>You can verify that your server is published by searching for it using the MCP Registry API:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">curl <span class="s2">&#34;https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.my-username/weather&#34;</span>
+</span></span></code></pre><p>You should see your server's metadata in the search results JSON:</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">{&#34;servers&#34;:[{ ... &#34;name&#34;:&#34;io.github.my-username/weather&#34; ... }]}
+</span></span></code></pre><h2 id="troubleshooting">Troubleshooting</h2>
+<p>{/* prettier-ignore-start */}</p>
+<table>
+<thead>
+<tr>
+<th>Error Message</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;Registry validation failed for package&quot;</td>
+<td>Ensure your package includes the required ownership-verification marker for its package type. For npm this is <code>mcpName</code> in <code>package.json</code>; for PyPI and NuGet it is an <code>mcp-name: &lt;server-name&gt;</code> line (or HTML comment) in the package README; for other types see <a href="./package-types">Package Types</a>.</td>
+</tr>
+<tr>
+<td>&quot;Invalid or expired Registry JWT token&quot;</td>
+<td>Re-authenticate by running <code>mcp-publisher login github</code>.</td>
+</tr>
+<tr>
+<td>&quot;You do not have permission to publish this server&quot;</td>
+<td>Your authentication method doesn't match your server's namespace format. With GitHub auth, your server name must start with <code>io.github.your-username/</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>{/* prettier-ignore-end */}</p>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li>Learn about <a href="./package-types">support for other package types</a>.</li>
+<li>Learn about <a href="./remote-servers">support for remote servers</a>.</li>
+<li>Learn how to <a href="./authentication">use other authentication methods</a>, such as <a href="./authentication#dns-authentication">DNS authentication</a> which enables custom domains for server name prefixes.</li>
+<li>Learn how to <a href="./github-actions">automate publishing with GitHub Actions</a>.</li>
+</ul>
+
+			</main>
+			<footer class="VPDocFooter">
+				
+				<div class="prev-next">
+					
+					<div class="pager">
+						<a class="pager-link prev" href="/history/prev-next-links.html">
+							<span class="desc">上一页</span>
+							<span class="title">上下页链接功能</span>
+						</a>
+					</div>
+					
+					
+					<div class="pager" style="margin-left: auto;">
+						<a class="pager-link next" href="/icetest/index.html">
+							<span class="desc">下一页</span>
+							<span class="title">IceTest</span>
+						</a>
+					</div>
+					
+				</div>
+				
+			</footer>
+		</div>
+	</div>
+</div>
+
+	
+</div>
+
+		
+
+<footer class="VPFooter ">
+	<div class="container">
+		<p class="message">Released under the <a href="https://github.com/vuejs/vitepress/blob/main/LICENSE">MIT License</a>.</p>
+		<p class="copyright">Copyright © 2026 GoPress Contributors</p>
+	</div>
+</footer>
+
+
+	</div>
+	<script type="module" src="/assets/app.js"></script>
+</body>
+</html>

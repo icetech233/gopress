@@ -81,6 +81,15 @@
           ]
         },
         {
+          "text": "MCP内容",
+          "items": [
+            {
+              "text": "快速开始",
+              "link": "/mcp/registry-quickstart.html"
+            }
+          ]
+        },
+        {
           "text": "IceTest",
           "link": "/icetest/index.html"
         }
