@@ -5,3 +5,5 @@ gopress.exe dev docs
 go run .\cmd\gopress dev docs
 
 go build .\cmd\gopress && gopress.exe build docs && gopress.exe dev docs
+
+gopress preview docs

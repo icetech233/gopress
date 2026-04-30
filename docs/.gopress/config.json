@@ -78,6 +78,11 @@
               "text": "上下页链接功能",
               "link": "/history/prev-next-links.html"
             }
+            ,
+            {
+              "text": "架构原则",
+              "link": "/history/architecture-principles.html"
+            }
           ]
         },
         {

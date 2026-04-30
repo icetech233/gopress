@@ -1,0 +1,761 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>My GoPress WebSite</title>
+	<meta name="description" content="A gopress website">
+	<link rel="stylesheet" href="/assets/theme.css">
+	<script>
+		const savedTheme = localStorage.getItem('gopress-theme-appearance');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+			document.documentElement.classList.add('dark');
+		}
+
+		// 提前恢复侧边栏折叠状态，在DOM解析期间立即应用，彻底避免页面渲染闪烁
+		(function() {
+			try {
+				const saved = localStorage.getItem('gopress-sidebar-states');
+				if (!saved) return;
+				const states = JSON.parse(saved);
+				
+				const observer = new MutationObserver((mutations) => {
+					for (const mutation of mutations) {
+						for (const node of mutation.addedNodes) {
+							if (node.nodeType !== 1) continue;
+							
+							const items = node.classList && node.classList.contains('VPSidebarItem') 
+								? [node] 
+								: node.querySelectorAll ? Array.from(node.querySelectorAll('.VPSidebarItem.is-collapsible')) : [];
+							
+							for (const item of items) {
+								if (!item.classList || !item.classList.contains('is-collapsible')) continue;
+								const textEl = item.querySelector('.item-row > .text');
+								const key = textEl ? textEl.textContent.trim() : '';
+								
+								if (key && states[key] !== undefined) {
+									let group = null;
+									for (let i = 0; i < item.children.length; i++) {
+										if (item.children[i].classList.contains('VPSidebarGroup')) {
+											group = item.children[i];
+											break;
+										}
+									}
+									if (states[key]) {
+										item.classList.add('collapsed');
+										if (group) group.style.display = 'none';
+									} else {
+										item.classList.remove('collapsed');
+										if (group) group.style.display = '';
+									}
+								}
+							}
+						}
+					}
+				});
+				observer.observe(document.documentElement, { childList: true, subtree: true });
+				document.addEventListener('DOMContentLoaded', () => observer.disconnect());
+			} catch (e) {}
+		})();
+	</script>
+</head>
+<body>
+	<div class="Layout" id="Layout">
+		
+<header class="VPNav">
+	<div class="VPNavBar">
+		<div class="title">
+			<a href="/">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo light-only">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo dark-only">
+				My GoPress WebSite
+			</a>
+		</div>
+		<div class="content">
+			<nav class="VPNavBarMenu">
+				
+				<a class="VPLink" href="/index.html">Home</a>
+				
+				<a class="VPLink" href="/guide/index.html">Guide</a>
+				
+				<a class="VPLink" href="/icetest/index.html">IceTest</a>
+				
+			</nav>
+			<div class="VPNavBarAppearance">
+				<button class="VPSwitchAppearance" type="button" aria-label="Toggle dark mode" onclick="toggleDarkMode()">
+					<span class="vpi-sun sun">☀️</span>
+					<span class="vpi-moon moon">🌙</span>
+				</button>
+			</div>
+			<div class="VPNavBarSocialLinks">
+				
+				<a class="VPSocialLink" href="https://github.com/icetech233/gopress" target="_blank" rel="noopener" aria-label="github">
+					<span class="vpi-social vpi-social-github">github</span>
+				</a>
+				
+			</div>
+			
+			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">☰</button>
+			
+		</div>
+	</div>
+</header>
+
+		
+
+<aside class="VPSidebar" id="VPSidebar">
+	<nav class="nav" id="VPSidebarNav">
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">导航</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/guide/index.html"><span class="text">导航介绍</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem is-collapsible ">
+	<div class="item-row">
+		
+		<span class="text">一级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级菜单首页</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级次页面</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem is-collapsible collapsed">
+	<div class="item-row">
+		
+		<span class="text">二级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" style="display: none;">
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">三级</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">历史记录</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-localstorage-persistence.html"><span class="text">折叠状态持久化</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-state-refactor.html"><span class="text">侧边栏状态重构</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-fouc-optimization.html"><span class="text">侧边栏防闪烁</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/themeable-logo.html"><span class="text">站点logo功能</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/prev-next-links.html"><span class="text">上下页链接功能</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/architecture-principles.html"><span class="text">架构原则</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">MCP内容</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/mcp/registry-quickstart.html"><span class="text">快速开始</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">IceTest</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+	</nav>
+</aside>
+
+
+		
+<div class="VPContent " id="VPContent">
+	
+		
+<div class="VPDoc">
+	<div class="container">
+		<div class="content">
+			<main class="main" id="main-content">
+				<h1 id="vitepress-">VitePress 架构原理</h1>
+<h2 id="heading">概述</h2>
+<p>VitePress 是一个基于 Vite 和 Vue 的静态站点生成器，它是 VuePress 的精神继承者。VitePress 通过利用 Vite 的极快开发体验和 Vue 的组件化能力，为开发者提供了一个高效、易用的文档站点构建工具。</p>
+<h2 id="heading-1">整体架构</h2>
+<p>VitePress 的架构可以分为三个主要层次：</p>
+<ol>
+<li><strong>Node 端构建层</strong> - 负责配置解析、插件管理、Markdown 编译和静态站点生成</li>
+<li><strong>Vite 插件系统</strong> - 集成到 Vite 生态中，处理资源和模块转换</li>
+<li><strong>Vue 客户端应用</strong> - 提供 SPA 体验、路由管理和主题系统</li>
+</ol>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                      客户端应用层                             │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌─────────┐ │
+│  │  Vue 应用 (app)  │  │     Router      │  │  Theme  │ │
+│  └──────────────────┘  └──────────────────┘  └─────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                            ↑
+┌─────────────────────────────────────────────────────────────┐
+│                    Vite 插件层 (plugin.ts)                  │
+│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐ │
+│  │ MD → Vue 转  │  │  资源处理    │  │  HMR/热更新    │ │
+│  └──────────────┘  └──────────────┘  └─────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                            ↑
+┌─────────────────────────────────────────────────────────────┐
+│                    Node 端构建层                             │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────────┐  │
+│  │ Config  │  │  Build   │  │  Server  │  │   CLI   │  │
+│  └──────────┘  └──────────┘  └──────────┘  └─────────┘  │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<h2 id="heading-2">核心模块详解</h2>
+<h3 id="1--configts">1. 配置系统 (config.ts)</h3>
+<p>配置系统是 VitePress 的入口，负责：</p>
+<ul>
+<li>加载和解析用户配置文件 (<code>.vitepress/config.ts</code>)</li>
+<li>合并默认配置和用户配置</li>
+<li>解析站点数据 (SiteData)</li>
+<li>处理国际化配置</li>
+<li>解析页面和路由</li>
+</ul>
+<p><strong>核心函数：</strong></p>
+<ul>
+<li><code>resolveConfig()</code> - 解析完整配置，包括用户配置、主题、页面等</li>
+<li><code>resolveUserConfig()</code> - 加载用户配置文件</li>
+<li><code>resolveSiteData()</code> - 生成站点数据对象</li>
+</ul>
+<p><strong>配置文件位置：</strong></p>
+<pre><code>.vitepress/
+├── config.ts         # 主配置文件
+├── config/
+│   └── index.ts      # 备选配置文件
+└── theme/            # 自定义主题目录
+</code></pre>
+<h3 id="2-vite--plugints">2. Vite 插件系统 (plugin.ts)</h3>
+<p>VitePress 核心插件 <code>createVitePressPlugin</code> 是连接 Node 端和客户端的桥梁：</p>
+<p><strong>主要功能：</strong></p>
+<ol>
+<li><strong>MD 文件转换</strong> - 将 Markdown 文件转换为 Vue 单文件组件</li>
+<li><strong>别名解析</strong> - 处理 <code>@theme</code>、<code>@vitepress</code> 等特殊导入</li>
+<li><strong>站点数据注入</strong> - 注入 <code>SITE_DATA</code> 虚拟模块</li>
+<li><strong>HMR 支持</strong> - 开发时热模块替换</li>
+<li><strong>静态资源处理</strong> - 处理图片、字体等资源</li>
+</ol>
+<p><strong>插件钩子：</strong></p>
+<ul>
+<li><code>config()</code> - 修改 Vite 配置</li>
+<li><code>configResolved()</code> - 配置解析完成后初始化 Markdown 渲染器</li>
+<li><code>resolveId()</code> - 解析特殊模块 ID</li>
+<li><code>load()</code> - 加载虚拟模块</li>
+<li><code>transform()</code> - 转换 <code>.md</code> 和 <code>.vue</code> 文件</li>
+<li><code>configureServer()</code> - 配置开发服务器中间件</li>
+</ul>
+<h3 id="3-markdown-">3. Markdown 处理系统</h3>
+<h4 id="31-markdown--markdownts">3.1 Markdown 渲染器 (markdown.ts)</h4>
+<p>基于 <code>markdown-it</code> 的 Markdown 渲染系统，支持：</p>
+<ul>
+<li><strong>语法高亮</strong> - 使用 Shiki 进行代码高亮</li>
+<li><strong>Frontmatter</strong> - 解析 YAML 前置元数据</li>
+<li><strong>Headers 提取</strong> - 提取标题用于侧边栏和大纲</li>
+<li><strong>TOC 生成</strong> - 生成目录</li>
+<li><strong>组件支持</strong> - 在 Markdown 中使用 Vue 组件</li>
+<li><strong>GitHub Alerts</strong> - 支持 GitHub 风格的提示框</li>
+<li><strong>自定义容器</strong> - 支持 <code>::: tip</code> 等容器语法</li>
+</ul>
+<p><strong>核心插件：</strong></p>
+<ul>
+<li><code>@mdit-vue/*</code> 系列插件 - Vue 生态的 Markdown 增强</li>
+<li><code>markdown-it-anchor</code> - 标题锚点</li>
+<li><code>markdown-it-attrs</code> - 属性支持</li>
+<li>自定义插件 (link, image, highlight 等)</li>
+</ul>
+<h4 id="32-markdown--vue-markdowntovuets">3.2 Markdown 转 Vue (markdownToVue.ts)</h4>
+<p>这是 VitePress 的核心转换层，负责将 Markdown 转换为 Vue SFC：</p>
+<p><strong>转换流程：</strong></p>
+<ol>
+<li><strong>预处理</strong> - 处理 <code>@include</code> 包含文件</li>
+<li><strong>渲染 Markdown</strong> - 调用 markdown-it 渲染为 HTML</li>
+<li><strong>提取元数据</strong> - frontmatter、headers、links 等</li>
+<li><strong>死链检测</strong> - 验证内部链接是否有效</li>
+<li><strong>生成 Vue SFC</strong> - 组合 script、template、style</li>
+<li><strong>注入页面数据</strong> - 将 <code>__pageData</code> 注入到组件中</li>
+</ol>
+<p><strong>输出示例：</strong></p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="kr">const</span> <span class="nx">__pageData</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;index.md&#39;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;&lt;</span><span class="nt">div</span><span class="p">&gt;...&lt;/</span><span class="nt">div</span><span class="p">&gt;&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span></code></pre><h3 id="4--buildts">4. 构建系统 (build.ts)</h3>
+<p>构建系统负责将文档站点编译为静态 HTML：</p>
+<p><strong>构建流程：</strong></p>
+<pre><code>1. 解析配置 (resolveConfig)
+   ↓
+2. 打包客户端和服务端 (bundle)
+   ├─ 客户端打包 - 生成 SPA 代码
+   └─ 服务端打包 - 生成 SSR 渲染器
+   ↓
+3. 渲染页面 (renderPage)
+   ├─ 导入 SSR 渲染器
+   ├─ 为每个页面调用 render()
+   └─ 生成完整的 HTML 文件
+   ↓
+4. 生成 Sitemap (generateSitemap)
+   ↓
+5. 清理临时文件
+</code></pre>
+<p><strong>关键优化：</strong></p>
+<ul>
+<li><strong>Lean Chunk</strong> - 为初始页面加载生成精简版本的代码 (<code>.lean.js</code>)</li>
+<li><strong>Static Content Stripping</strong> - 在客户端代码中剥离静态内容，减少体积</li>
+<li><strong>Concurrency Control</strong> - 通过 <code>buildConcurrency</code> 控制并发渲染数</li>
+</ul>
+<h3 id="5--appindexts">5. 客户端应用 (app/index.ts)</h3>
+<p>客户端是一个 Vue 3 SPA 应用：</p>
+<p><strong>应用初始化流程：</strong></p>
+<pre><code>1. 创建路由 (createRouter)
+   ↓
+2. 创建 Vue 应用 (createSSRApp / createClientApp)
+   ↓
+3. 提供数据 (provide dataSymbol, RouterSymbol)
+   ↓
+4. 注册全局组件 (Content, ClientOnly)
+   ↓
+5. 加载主题 (Theme.enhanceApp)
+   ↓
+6. 路由跳转 (router.go)
+   ↓
+7. 挂载应用 (app.mount('#app'))
+</code></pre>
+<h3 id="6--routerts">6. 路由系统 (router.ts)</h3>
+<p>VitePress 实现了自己的轻量级路由系统：</p>
+<p><strong>核心特性：</strong></p>
+<ul>
+<li><strong>文件系统路由</strong> - 基于 Markdown 文件路径自动生成路由</li>
+<li><strong>Hash 路由</strong> - 支持 URL hash 锚点</li>
+<li><strong>Prefetch</strong> - 生产环境下预加载链接页面</li>
+<li><strong>滚动恢复</strong> - 前进/后退时恢复滚动位置</li>
+<li><strong>页面加载器</strong> - 动态加载页面组件</li>
+</ul>
+<p><strong>路由钩子：</strong></p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="kr">interface</span> <span class="nx">Router</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">onBeforeRouteChange</span><span class="o">?:</span> <span class="p">(</span><span class="nx">to</span>: <span class="kt">string</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">Awaitable</span><span class="p">&lt;</span><span class="nt">void</span> <span class="err">|</span> <span class="na">boolean</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">onBeforePageLoad</span><span class="o">?:</span> <span class="p">(</span><span class="nx">to</span>: <span class="kt">string</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">Awaitable</span><span class="p">&lt;</span><span class="nt">void</span> <span class="err">|</span> <span class="na">boolean</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">onAfterPageLoad</span><span class="o">?:</span> <span class="p">(</span><span class="nx">to</span>: <span class="kt">string</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">Awaitable</span><span class="p">&lt;</span><span class="nt">void</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">onAfterRouteChange</span><span class="o">?:</span> <span class="p">(</span><span class="nx">to</span>: <span class="kt">string</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">Awaitable</span><span class="p">&lt;</span><span class="nt">void</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre><h3 id="7--themets">7. 主题系统 (theme.ts)</h3>
+<p>主题系统是 VitePress 最强大的特性之一：</p>
+<p><strong>主题接口：</strong></p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="kr">interface</span> <span class="nx">Theme</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Layout?</span>: <span class="kt">Component</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">enhanceApp</span><span class="o">?:</span> <span class="p">(</span><span class="nx">ctx</span>: <span class="kt">EnhanceAppContext</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">Awaitable</span><span class="p">&lt;</span><span class="nt">void</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">extends</span><span class="o">?:</span> <span class="nx">Theme</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">setup</span><span class="o">?:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">void</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">NotFound?</span>: <span class="kt">Component</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre><p><strong>默认主题结构 (theme-default/)：</strong></p>
+<pre><code>theme-default/
+├── index.ts              # 主题入口
+├── without-fonts.ts      # 不含字体的版本
+├── Layout.vue            # 主布局组件
+├── components/           # UI 组件
+│   ├── VPBadge.vue
+│   ├── VPButton.vue
+│   ├── VPNavBarSearch.vue
+│   └── ...
+├── composables/          # 组合式函数
+│   ├── layout.ts
+│   ├── sidebar.ts
+│   ├── nav.ts
+│   └── ...
+├── support/              # 支持工具
+│   ├── sidebar.ts
+│   ├── utils.ts
+│   └── ...
+└── styles/               # 样式文件
+    ├── vars.css
+    ├── base.css
+    └── ...
+</code></pre>
+<p><strong>主题继承：</strong></p>
+<p>主题可以通过 <code>extends</code> 继承其他主题，这使得自定义主题变得非常容易：</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="c1">// 自定义主题
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">import</span> <span class="nx">DefaultTheme</span> <span class="kr">from</span> <span class="s1">&#39;vitepress/theme&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">extends</span><span class="o">:</span> <span class="nx">DefaultTheme</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">enhanceApp</span><span class="p">({</span> <span class="nx">app</span> <span class="p">})</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 增强应用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre><h2 id="heading-3">数据流程</h2>
+<h3 id="heading-4">开发模式数据流</h3>
+<pre><code>文件变更
+   ↓
+Vite 监听 → VitePress 插件
+   ↓
+markdownToVue() 转换
+   ↓
+@vitejs/plugin-vue 处理
+   ↓
+HMR 更新 → 客户端刷新
+</code></pre>
+<h3 id="heading-5">构建模式数据流</h3>
+<pre><code>解析配置
+   ↓
+收集所有 .md 页面
+   ↓
+打包客户端和 SSR 服务端
+   ↓
+并行渲染每个页面
+   ↓
+生成静态 HTML
+   ↓
+生成资源文件 (CSS, JS, assets)
+</code></pre>
+<h2 id="heading-6">关键设计决策</h2>
+<h3 id="1--vite">1. 基于 Vite</h3>
+<p>VitePress 选择构建在 Vite 之上，而不是像 VuePress 那样自己构建构建系统，这带来了：</p>
+<ul>
+<li><strong>极快的启动速度</strong> - Vite 的 ES Module 原生支持</li>
+<li><strong>即时 HMR</strong> - 开发体验极佳</li>
+<li><strong>丰富的插件生态</strong> - 可以复用 Vite 生态的插件</li>
+<li><strong>统一的构建工具</strong> - 不需要学习新的构建系统</li>
+</ul>
+<h3 id="2-markdown-">2. Markdown 优先</h3>
+<p>VitePress 坚持 Markdown 作为内容的主要格式：</p>
+<ul>
+<li>简单易用，非技术人员也能编写</li>
+<li>与 Git 版本控制完美配合</li>
+<li>丰富的扩展生态</li>
+<li>通过 Vue 组件增强表现力</li>
+</ul>
+<h3 id="3-vue-">3. Vue 组件集成</h3>
+<p>在 Markdown 中直接使用 Vue 组件是一个强大的特性：</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="gh"># 我的文档
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">MyComponent</span> <span class="na">:prop</span><span class="o">=</span><span class="s">&#34;value&#34;</span> <span class="p">/&gt;</span>
+</span></span></code></pre><p>这通过 <code>@mdit-vue/plugin-component</code> 实现。</p>
+<h3 id="4-ssr--spa-">4. SSR + SPA 混合模式</h3>
+<p>VitePress 采用了 SSR 预渲染 + SPA 水合的模式：</p>
+<ul>
+<li><strong>构建时</strong> - SSR 渲染为静态 HTML，SEO 友好</li>
+<li><strong>运行时</strong> - SPA 模式，页面切换无刷新</li>
+<li><strong>最佳平衡</strong> - 兼顾首屏加载和交互体验</li>
+</ul>
+<h3 id="5-">5. 主题扩展性</h3>
+<p>主题系统的设计注重可扩展性：</p>
+<ul>
+<li>组合式 API (Composables) 便于复用逻辑</li>
+<li>组件可以覆盖和替换</li>
+<li><code>enhanceApp</code> 钩子提供完全的自定义能力</li>
+<li>主题继承机制减少重复代码</li>
+</ul>
+<h2 id="heading-7">性能优化</h2>
+<h3 id="1-">1. 代码分割</h3>
+<ul>
+<li>每个页面是独立的 chunk</li>
+<li>按需加载，减少初始包体积</li>
+<li>公共代码提取到共享 chunk</li>
+</ul>
+<h3 id="2-lean-chunk">2. Lean Chunk</h3>
+<p>为每个页面生成两个版本：</p>
+<ul>
+<li><strong>完整版本</strong> - 包含所有内容，用于后续导航</li>
+<li><strong>Lean 版本</strong> - 移除静态内容，用于初始加载，体积更小</li>
+</ul>
+<h3 id="3-prefetch">3. Prefetch</h3>
+<p>生产环境使用 IntersectionObserver 预加载视口中的链接：</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="kr">import</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PROD</span> <span class="o">&amp;&amp;</span> <span class="nx">site</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="nx">prefetchLinks</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">usePrefetch</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre><h3 id="4-lru-">4. LRU 缓存</h3>
+<p>Markdown 编译结果使用 LRU 缓存：</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">cache</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">LRUCache</span><span class="p">&lt;</span><span class="nt">string</span><span class="err">,</span> <span class="na">MarkdownCompileResult</span><span class="p">&gt;({</span> <span class="nx">max</span>: <span class="kt">1024</span> <span class="p">})</span>
+</span></span></code></pre><h3 id="5--1">5. 并发构建</h3>
+<p>页面渲染支持并发控制，默认 64 个并发：</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="k">await</span> <span class="nx">pMap</span><span class="p">(</span><span class="nx">pages</span><span class="p">,</span> <span class="nx">renderPage</span><span class="p">,</span> <span class="p">{</span> <span class="nx">concurrency</span>: <span class="kt">siteConfig.buildConcurrency</span> <span class="p">})</span>
+</span></span></code></pre><h2 id="heading-8">目录结构</h2>
+<pre><code>vitepress/
+├── src/
+│   ├── node/              # Node 端代码
+│   │   ├── index.ts       # 主入口
+│   │   ├── config.ts      # 配置解析
+│   │   ├── plugin.ts      # Vite 插件
+│   │   ├── cli.ts         # 命令行
+│   │   ├── server.ts      # 开发服务器
+│   │   ├── build/         # 构建系统
+│   │   │   ├── build.ts
+│   │   │   ├── bundle.ts
+│   │   │   └── render.ts
+│   │   ├── markdown/      # Markdown 处理
+│   │   │   ├── markdown.ts
+│   │   │   └── plugins/
+│   │   └── plugins/       # VitePress 插件
+│   ├── client/            # 客户端代码
+│   │   ├── index.ts       # 客户端入口
+│   │   ├── app/           # 应用核心
+│   │   │   ├── index.ts
+│   │   │   ├── router.ts
+│   │   │   ├── theme.ts
+│   │   │   ├── data.ts
+│   │   │   └── components/
+│   │   └── theme-default/ # 默认主题
+│   └── shared/            # 共享代码
+├── bin/
+│   └── vitepress.js       # CLI 入口
+└── package.json
+</code></pre>
+<h2 id="heading-9">总结</h2>
+<p>VitePress 的架构设计优雅而高效，通过将 Vite 的构建能力、Vue 的组件系统和 Markdown 的简洁性完美结合，提供了一个卓越的文档站点构建体验。其核心优势在于：</p>
+<ol>
+<li><strong>开发体验极佳</strong> - 基于 Vite 的即时 HMR</li>
+<li><strong>扩展性强</strong> - 主题系统和插件机制</li>
+<li><strong>性能优秀</strong> - 多种优化策略确保快速加载</li>
+<li><strong>易于使用</strong> - Markdown 优先，配置简单</li>
+</ol>
+<p>这使得 VitePress 成为构建技术文档、博客和静态站点的理想选择。</p>
+
+			</main>
+			<footer class="VPDocFooter">
+				
+				<div class="prev-next">
+					
+					<div class="pager">
+						<a class="pager-link prev" href="/history/prev-next-links.html">
+							<span class="desc">上一页</span>
+							<span class="title">上下页链接功能</span>
+						</a>
+					</div>
+					
+					
+					<div class="pager" style="margin-left: auto;">
+						<a class="pager-link next" href="/mcp/registry-quickstart.html">
+							<span class="desc">下一页</span>
+							<span class="title">快速开始</span>
+						</a>
+					</div>
+					
+				</div>
+				
+			</footer>
+		</div>
+	</div>
+</div>
+
+	
+</div>
+
+		
+
+<footer class="VPFooter ">
+	<div class="container">
+		<p class="message">Released under the <a href="https://github.com/vuejs/vitepress/blob/main/LICENSE">MIT License</a>.</p>
+		<p class="copyright">Copyright © 2026 GoPress Contributors</p>
+	</div>
+</footer>
+
+
+	</div>
+	<script type="module" src="/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>My GoPress WebSite</title>
+	<meta name="description" content="A gopress website">
+	<link rel="stylesheet" href="/assets/theme.css">
+	<script>
+		const savedTheme = localStorage.getItem('gopress-theme-appearance');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+			document.documentElement.classList.add('dark');
+		}
+
+		// 提前恢复侧边栏折叠状态，在DOM解析期间立即应用，彻底避免页面渲染闪烁
+		(function() {
+			try {
+				const saved = localStorage.getItem('gopress-sidebar-states');
+				if (!saved) return;
+				const states = JSON.parse(saved);
+				
+				const observer = new MutationObserver((mutations) => {
+					for (const mutation of mutations) {
+						for (const node of mutation.addedNodes) {
+							if (node.nodeType !== 1) continue;
+							
+							const items = node.classList && node.classList.contains('VPSidebarItem') 
+								? [node] 
+								: node.querySelectorAll ? Array.from(node.querySelectorAll('.VPSidebarItem.is-collapsible')) : [];
+							
+							for (const item of items) {
+								if (!item.classList || !item.classList.contains('is-collapsible')) continue;
+								const textEl = item.querySelector('.item-row > .text');
+								const key = textEl ? textEl.textContent.trim() : '';
+								
+								if (key && states[key] !== undefined) {
+									let group = null;
+									for (let i = 0; i < item.children.length; i++) {
+										if (item.children[i].classList.contains('VPSidebarGroup')) {
+											group = item.children[i];
+											break;
+										}
+									}
+									if (states[key]) {
+										item.classList.add('collapsed');
+										if (group) group.style.display = 'none';
+									} else {
+										item.classList.remove('collapsed');
+										if (group) group.style.display = '';
+									}
+								}
+							}
+						}
+					}
+				});
+				observer.observe(document.documentElement, { childList: true, subtree: true });
+				document.addEventListener('DOMContentLoaded', () => observer.disconnect());
+			} catch (e) {}
+		})();
+	</script>
+</head>
+<body>
+	<div class="Layout" id="Layout">
+		
+<header class="VPNav">
+	<div class="VPNavBar">
+		<div class="title">
+			<a href="/">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo light-only">
+				<img src="https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao/web/doubao_avatar.png" alt="测试Logo" class="logo dark-only">
+				My GoPress WebSite
+			</a>
+		</div>
+		<div class="content">
+			<nav class="VPNavBarMenu">
+				
+				<a class="VPLink" href="/index.html">Home</a>
+				
+				<a class="VPLink" href="/guide/index.html">Guide</a>
+				
+				<a class="VPLink" href="/icetest/index.html">IceTest</a>
+				
+			</nav>
+			<div class="VPNavBarAppearance">
+				<button class="VPSwitchAppearance" type="button" aria-label="Toggle dark mode" onclick="toggleDarkMode()">
+					<span class="vpi-sun sun">☀️</span>
+					<span class="vpi-moon moon">🌙</span>
+				</button>
+			</div>
+			<div class="VPNavBarSocialLinks">
+				
+				<a class="VPSocialLink" href="https://github.com/icetech233/gopress" target="_blank" rel="noopener" aria-label="github">
+					<span class="vpi-social vpi-social-github">github</span>
+				</a>
+				
+			</div>
+			
+			<button class="VPNavBarHamburger" type="button" aria-label="mobile navigation" onclick="toggleSidebar()">☰</button>
+			
+		</div>
+	</div>
+</header>
+
+		
+
+<aside class="VPSidebar" id="VPSidebar">
+	<nav class="nav" id="VPSidebarNav">
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">导航</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/guide/index.html"><span class="text">导航介绍</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem is-collapsible ">
+	<div class="item-row">
+		
+		<span class="text">一级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级菜单首页</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">二级次页面</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem is-collapsible collapsed">
+	<div class="item-row">
+		
+		<span class="text">二级菜单</span>
+		
+		
+		<div class="caret" onclick="toggleSidebarGroup(this)">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="vpi-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+		</div>
+		
+	</div>
+	
+	<div class="VPSidebarGroup" style="display: none;">
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">三级</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">历史记录</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-localstorage-persistence.html"><span class="text">折叠状态持久化</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-state-refactor.html"><span class="text">侧边栏状态重构</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/sidebar-fouc-optimization.html"><span class="text">侧边栏防闪烁</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/themeable-logo.html"><span class="text">站点logo功能</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/prev-next-links.html"><span class="text">上下页链接功能</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/history/architecture-principles.html"><span class="text">架构原则</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<span class="text">MCP内容</span>
+		
+		
+	</div>
+	
+	<div class="VPSidebarGroup" >
+		
+		
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/mcp/registry-quickstart.html"><span class="text">快速开始</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+		<div class="VPSidebarGroup">
+			
+<div class="VPSidebarItem  ">
+	<div class="item-row">
+		
+		<a class="VPLink link" href="/icetest/index.html"><span class="text">IceTest</span></a>
+		
+		
+	</div>
+	
+</div>
+
+		</div>
+		
+	</nav>
+</aside>
+
+
+		
+<div class="VPContent " id="VPContent">
+	
+		
+<div class="VPDoc">
+	<div class="container">
+		<div class="content">
+			<main class="main" id="main-content">
+				<h1 id="-gopress-preview-">新增 <code>gopress preview</code> 命令功能说明</h1>
+<h2 id="1-">1. 背景与目标</h2>
+<p>参考 VitePress 中 <code>vitepress preview</code> 的设计，我们在 <code>GoPress</code> 中引入了 <code>preview</code> 命令。该命令旨在提供对本地构建产物（生产环境静态文件）的预览服务，并在其基础上额外增强了**热重载（Live Reload）**功能，以便在多终端操作重新构建时能自动刷新浏览器体验。</p>
+<h2 id="2-">2. 功能特性</h2>
+<ul>
+<li><strong>本地预览服务器</strong>：启动一个轻量级的 HTTP 静态服务器，将构建目录（默认 <code>.gopress/dist</code>）作为静态资源根目录进行分发。</li>
+<li><strong>热重载支持 (Live Reload)</strong>：有别于普通的静态服务器，我们通过在读取 HTML 文件时自动注入 WebSocket 脚本，监听 <code>.gopress/dist</code> 目录的变化。如果运行 <code>preview</code> 期间再次执行了 <code>build</code> 更新了产物，页面会自动触发重载。</li>
+<li><strong>智能路由回退</strong>：自动处理无后缀 URL 请求。对于像 <code>/guide/index</code> 或 <code>/about</code> 这样的请求，如果对应的 <code>.html</code> 文件存在，会自动降级匹配，对齐 VitePress 的原生路由体验。</li>
+<li><strong>安全与容错提示</strong>：
+<ul>
+<li>在启动服务器前，检查目标输出目录是否存在。如果尚未执行构建，会提示用户先执行 <code>gopress build</code>。</li>
+<li>包含针对目录穿越（Directory Traversal）漏洞的基础拦截逻辑。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-">3. 代码实现细节</h2>
+<h3 id="31--cmdgopressmaingo">3.1 核心命令注册 (<code>cmd/gopress/main.go</code>)</h3>
+<p>新增了 <code>previewCmd</code> 命令行指令，并在 <code>init()</code> 中进行注册，与原有的 <code>dev</code>、<code>build</code> 保持一致的参数规范：</p>
+<ul>
+<li>默认监听 <code>3000</code> 端口（可通过 <code>-p</code> 或 <code>--port</code> 选项指定）。</li>
+<li>默认代理目录为 <code>.gopress/dist</code>（可通过 <code>-o</code> 或 <code>--outDir</code> 选项指定）。</li>
+</ul>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">previewCmd</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">cobra</span><span class="p">.</span><span class="nx">Command</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Use</span><span class="p">:</span>   <span class="s">&#34;preview [root]&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Short</span><span class="p">:</span> <span class="s">&#34;Preview the built static site&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Long</span><span class="p">:</span>  <span class="s">&#34;Starts a local web server to preview the built static site. Supports hot-reload.&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Run</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">cmd</span> <span class="o">*</span><span class="nx">cobra</span><span class="p">.</span><span class="nx">Command</span><span class="p">,</span> <span class="nx">args</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 容错检查：确保用户在预览前已构建站点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="nx">stat</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Stat</span><span class="p">(</span><span class="nx">outDir</span><span class="p">);</span> <span class="nx">os</span><span class="p">.</span><span class="nf">IsNotExist</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">||</span> <span class="p">!</span><span class="nx">stat</span><span class="p">.</span><span class="nf">IsDir</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Error: Output directory &#39;%s&#39; does not exist. Please run &#39;gopress build&#39; first.\n&#34;</span><span class="p">,</span> <span class="nx">outDir</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 启动 PreviewServer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">previewServer</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">server</span><span class="p">.</span><span class="nx">PreviewServer</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">OutDir</span><span class="p">:</span> <span class="nx">outDir</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">previewServer</span><span class="p">.</span><span class="nf">Start</span><span class="p">(</span><span class="nx">port</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Error starting preview server: %v\n&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre><h3 id="32--internalserverpreviewgo">3.2 预览服务器实现 (<code>internal/server/preview.go</code>)</h3>
+<p>为了职责分离，我们在 <code>internal/server/preview.go</code> 中专门封装了 <code>PreviewServer</code> 结构体：</p>
+<ol>
+<li>
+<p><strong>复用 LiveReload 模块</strong>：通过 <code>s.lr.Watch(s.OutDir)</code> 监听构建产物目录的变化。</p>
+</li>
+<li>
+<p><strong>HTML 劫持与脚本注入</strong>：在 <code>handleRequest</code> 阶段，如果判断返回内容是 HTML 页面，会在响应写入前拦截内容，在 <code>&lt;/body&gt;</code> 前注入如下脚本以实现热刷新功能：</p>
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">protocol</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">===</span> <span class="s1">&#39;https:&#39;</span> <span class="o">?</span> <span class="s1">&#39;wss:&#39;</span> <span class="o">:</span> <span class="s1">&#39;ws:&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">host</span> <span class="o">+</span> <span class="s1">&#39;/ws&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ws</span><span class="p">.</span><span class="nx">onmessage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span> <span class="o">===</span> <span class="s1">&#39;reload&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="p">})();</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></li>
+</ol>
+<h2 id="4-">4. 使用方式</h2>
+<ol>
+<li>先执行构建操作：
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">gopress build
+</span></span></code></pre></li>
+<li>启动预览服务：
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">gopress preview
+</span></span></code></pre></li>
+<li>也可以通过标志位指定端口和目录：
+<pre tabindex="0" class="chroma"><code><span class="line"><span class="cl">gopress preview -p <span class="m">8080</span> -o ./my-custom-dist
+</span></span></code></pre></li>
+</ol>
+
+			</main>
+			<footer class="VPDocFooter">
+				
+			</footer>
+		</div>
+	</div>
+</div>
+
+	
+</div>
+
+		
+
+<footer class="VPFooter ">
+	<div class="container">
+		<p class="message">Released under the <a href="https://github.com/vuejs/vitepress/blob/main/LICENSE">MIT License</a>.</p>
+		<p class="copyright">Copyright © 2026 GoPress Contributors</p>
+	</div>
+</footer>
+
+
+	</div>
+	<script type="module" src="/assets/app.js"></script>
+</body>
+</html>
